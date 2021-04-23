@@ -11,8 +11,6 @@ import PrivateRoute from './PrivateRoute.js'
 export default () => {
   return (
     <BrowserRouter>
-      <Sidebar />
-      <Navbar />
       <Switch>
         {
           routes
