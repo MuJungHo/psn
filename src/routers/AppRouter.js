@@ -22,7 +22,7 @@ export default () => {
               />
             )
         }
-        <Redirect to='/program' />
+        <Redirect to='/newui/medias' />
       </Switch>
     </BrowserRouter>
   )

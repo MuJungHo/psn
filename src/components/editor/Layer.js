@@ -1,12 +1,22 @@
 import React from 'react'
 import Anchor from './Anchor'
 import Guide from './Guide'
-export default ({ layer, board, setLayers, layers }) => {
+export default ({
+  layer,
+  board,
+  setLayers,
+  layers,
+  program,
+  activeLayer,
+  setActiveLayer
+}) => {
+  const mf = process.env.REACT_APP_MEDIA_PATH
+  const psn = process.env.REACT_APP_PSN
   const [start, setStart] = React.useState(null)
-  const tops = layers.filter(l => l.id !== layer.id).map(l => l.top)
-  const bottoms = layers.filter(l => l.id !== layer.id).map(l => l.top + l.height)
-  const lefts = layers.filter(l => l.id !== layer.id).map(l => l.left)
-  const rights = layers.filter(l => l.id !== layer.id).map(l => l.left + l.width)
+  const tops = layers.filter(l => l.ptid !== layer.ptid).map(l => l.top)
+  const bottoms = layers.filter(l => l.ptid !== layer.ptid).map(l => l.top + l.height)
+  const lefts = layers.filter(l => l.ptid !== layer.ptid).map(l => l.left)
+  const rights = layers.filter(l => l.ptid !== layer.ptid).map(l => l.left + l.width)
   const layerXs = tops.concat(bottoms)
   const layerYs = lefts.concat(rights)
   React.useEffect(() => {
@@ -17,7 +27,7 @@ export default ({ layer, board, setLayers, layers }) => {
   }, [start])
   const handleUpdateLayer = updatedLayer => {
     setLayers(layers.map(layer => {
-      if (layer.id === updatedLayer.id) return { ...updatedLayer }
+      if (layer.ptid === updatedLayer.ptid) return { ...updatedLayer }
       else return { ...layer }
     }))
   }
@@ -99,52 +109,90 @@ export default ({ layer, board, setLayers, layers }) => {
       return layerYs.some(layerY => Math.abs(layerY - layer.left - layer.width) < 10)
     }
   }
+  const filePath = () => {
+    if (layer.type === 'btn' && layer.mdesc !== '') return `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}_0.png`
+    if (layer.file) {
+      return `${mf}/_preview/${layer.file.split('.')[0]}.jpg`
+    } else {
+      return `${psn}/images/module/ico-${layer.type}.png`
+    }
+  }
+  const focus = () => {
+    setActiveLayer({ ...layer })
+  }
+  const blur = () => {
+    setActiveLayer({})
+  }
   return (
-    <>
+    <g
+      onFocus={focus}
+      onBlur={blur}
+      tabIndex="-1"
+    >
       <rect
-        style={{ fill: 'white', stroke: 'red', strokeWidth: 1, fillOpacity: '.5' }}
+        style={{
+          fill: 'white',
+          stroke: layer.ptid === activeLayer.ptid ? 'red' : '',
+          strokeWidth: 1,
+          fillOpacity: '.5'
+        }}
+        x={layer.left}
+        y={layer.top}
+        width={layer.width}
+        height={layer.height}
+      />
+      <image
+        xlinkHref={filePath()}
         x={layer.left}
         y={layer.top}
         width={layer.width}
         height={layer.height}
         onMouseDown={startDrag}
       />
-      <Anchor
-        position="left-top"
-        board={board}
-        cx={layer.left}
-        cy={layer.top}
-        layer={layer}
-        offset={offset}
-      />
-      <Anchor
-        position="right-top"
-        board={board}
-        cx={layer.left + layer.width}
-        cy={layer.top}
-        layer={layer}
-        offset={offset}
-      />
-      <Anchor
-        position="left-bottom"
-        board={board}
-        cx={layer.left}
-        cy={layer.top + layer.height}
-        layer={layer}
-        offset={offset}
-      />
-      <Anchor
-        position="right-bottom"
-        board={board}
-        cx={layer.left + layer.width}
-        cy={layer.top + layer.height}
-        layer={layer}
-        offset={offset}
-      />
-      <Guide x1={layer.left - 100} y1={layer.top} x2={layer.left + layer.width + 100} y2={layer.top} show={isGuideShow('top')} />
+      {
+        layer.ptid === activeLayer.ptid
+          ?
+          <>
+            <Anchor
+              position="left-top"
+              board={board}
+              cx={layer.left}
+              cy={layer.top}
+              layer={layer}
+              offset={offset}
+            />
+            <Anchor
+              position="right-top"
+              board={board}
+              cx={layer.left + layer.width}
+              cy={layer.top}
+              layer={layer}
+              offset={offset}
+            />
+            <Anchor
+              position="left-bottom"
+              board={board}
+              cx={layer.left}
+              cy={layer.top + layer.height}
+              layer={layer}
+              offset={offset}
+            />
+            <Anchor
+              position="right-bottom"
+              board={board}
+              cx={layer.left + layer.width}
+              cy={layer.top + layer.height}
+              layer={layer}
+              offset={offset}
+            />
+          </>
+          : null
+      }
+
+      {/* <Guide x1={layer.left - 100} y1={layer.top} x2={layer.left + layer.width + 100} y2={layer.top} show={isGuideShow('top')} />
       <Guide x1={layer.left - 100} y1={layer.top + layer.height} x2={layer.left + layer.width + 100} y2={layer.top + layer.height} show={isGuideShow('bottom')} />
       <Guide x1={layer.left} y1={layer.top - 100} x2={layer.left} y2={layer.top + layer.height + 100} show={isGuideShow('left')} />
-      <Guide x1={layer.left + layer.width} y1={layer.top - 100} x2={layer.left + layer.width} y2={layer.top + layer.height + 100} show={isGuideShow('right')} />
-    </>
+      <Guide x1={layer.left + layer.width} y1={layer.top - 100} x2={layer.left + layer.width} y2={layer.top + layer.height + 100} show={isGuideShow('right')} /> */}
+    </g>
   )
 }

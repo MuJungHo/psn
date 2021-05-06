@@ -1,8 +1,14 @@
 import Program from '../views/Program'
+import Medias from '../views/Medias'
+
 const routes = [
   {
-    path: '/program',
+    path: '/newui/program',
     component: Program
+  },
+  {
+    path: '/newui/medias',
+    component: Medias
   },
 ]
 
