@@ -4,9 +4,12 @@ import Board from '../components/editor/Board'
 import Button from '../components/material/Button'
 import convert from 'xml2js'
 import moment from 'moment'
-import { getPgInfo, getPgPreviewInfoFromEdit, savePgInfo, saveLabelInfo } from '../utils/apis'
+import { getPgInfo, getPgPreviewInfoFromEdit, savePgInfo, saveLabelInfo, postScreenshot } from '../utils/apis'
+import { useHistory } from "react-router-dom"
+import html2canvas from 'html2canvas'
 export default () => {
   const { pgid } = useParams()
+  const history = useHistory();
   const [layers, setLayers] = React.useState([])
   const [zoom, setZoom] = React.useState(1)
   const [program, setProgram] = React.useState({})
@@ -93,7 +96,7 @@ export default () => {
       uid: 1,
       select_udid: 1,
       pgid_tmp: tempPgid,
-      pgname: moment().format('hh:mm:ss'),
+      pgname: 'IU Love Me',
       bgcolor: '#FF000000',
       bgimage: 0,
       bgmusic: 0,
@@ -129,12 +132,27 @@ export default () => {
       shuffle: '0|0',
       tbl_argv: '',
     }
-    savePgInfo({ ...params }).then(response => {
+    savePgInfo({ ...params }).then(() => {
+      handleCaptureScreen()
     })
   }
+  const handleCaptureScreen = () => {
+    html2canvas(document.getElementById('board'), {
+      useCORS: true,
+      allowTaint: true,
+      proxy: 'http://127.0.0.1/mf'
+    }).then(canvas => {
+      var imgBase64 = canvas.toDataURL()
+      postScreenshot({ previewPgid: pgid, previewPgname: 'IU Love Me', imgBase64, flag: 0 }).then(() => {
+        postScreenshot({ previewPgid: pgid, previewPgname: 'IU Love Me', imgBase64, flag: 1 })
+      })
+    })
+  }
+
   return (
     <>
       <Button variant="contained" color="primary" style={{ marginRight: '1rem' }} onClick={handleSaveProgram} >save</Button>
+      <Button variant="contained" color="secondary" style={{ marginRight: '1rem' }} onClick={() => history.push(`/newui/programs`)}>back</Button>
       <Board
         layers={layers}
         setLayers={setLayers}
