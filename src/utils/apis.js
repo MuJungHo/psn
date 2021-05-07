@@ -21,3 +21,4 @@ export const saveLabelInfo = params => postFormData('/psn/psn_mod/media.py', { c
 export const savePgInfo = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'savePgInfo', ...params })
 export const getPgInfo = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgInfo', ...params })
 export const getPgPreviewInfoFromEdit = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgPreviewInfoFromEdit', ...params })
+export const getPgLstByUdid = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgLstByUdid', ...params })

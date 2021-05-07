@@ -103,9 +103,8 @@ export default () => {
       className={classes.root}
       style={{
         width: 'calc(100% - 42px)',
-        marginLeft: 42,
+        marginLeft: 20,
         backgroundColor: 'transparent',
-        height: 'calc(100vh - 330px)',
         overflow: 'auto',
         marginTop: 10
       }}
