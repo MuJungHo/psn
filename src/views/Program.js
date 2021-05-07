@@ -1,11 +1,12 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import Board from '../components/editor/Board'
 import Button from '../components/material/Button'
 import convert from 'xml2js'
 import moment from 'moment'
 import { getPgInfo, getPgPreviewInfoFromEdit, savePgInfo, saveLabelInfo } from '../utils/apis'
 export default () => {
-
+  const { pgid } = useParams()
   const [layers, setLayers] = React.useState([])
   const [zoom, setZoom] = React.useState(1)
   const [program, setProgram] = React.useState({})
@@ -15,8 +16,9 @@ export default () => {
   const boardHeight = 540
   const boardTop = 0
   const boardLeft = 0
+  const uid = localStorage.getItem('login_uid') || 1
   React.useEffect(() => {
-    getPgInfo({ pgid: 17, uid: 1, login_udid: 1 })
+    getPgInfo({ pgid, uid })
       .then(response => {
         convert.parseString(response.data, { explicitArray: false }, (err, result) => {
           if (!err) {

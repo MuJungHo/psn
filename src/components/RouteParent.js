@@ -71,8 +71,8 @@ export default props => {
                 <List component="div" disablePadding>
                   <ListItem className={classes.nested}>
                     <div style={{
-                      width: '.5em',
-                      height: '.5em',
+                      width: 6,
+                      height: 6,
                       borderRadius: '50%',
                       marginRight: 27
                     }} />

@@ -1,6 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux'
+import { setDrawerStatus } from '../actions/drawer'
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -85,14 +87,17 @@ const useStyles = makeStyles((theme) => ({
 export default function MiniDrawer() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
+  const dispatch = useDispatch()
   const handleDrawerOpen = () => {
     setOpen(true);
+    dispatch(setDrawerStatus(true))
   };
 
   const handleDrawerClose = () => {
     setOpen(false);
+    dispatch(setDrawerStatus(false))
   };
 
   return (

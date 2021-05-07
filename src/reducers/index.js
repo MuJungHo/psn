@@ -1,2 +1,7 @@
 import { combineReducers } from 'redux'
-export default combineReducers({})
+import user from './user'
+import drawer from './drawer'
+export default combineReducers({ 
+    user, 
+    drawer 
+})

@@ -11,6 +11,8 @@ import PrivateRoute from './PrivateRoute.js'
 export default () => {
   return (
     <BrowserRouter>
+      <Sidebar/>
+      <Navbar/>
       <Switch>
         {
           routes
@@ -22,7 +24,7 @@ export default () => {
               />
             )
         }
-        <Redirect to='/newui/medias' />
+        <Redirect to='/newui/programs' />
       </Switch>
     </BrowserRouter>
   )
