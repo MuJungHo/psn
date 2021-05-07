@@ -56,42 +56,42 @@ export default () => {
   }, [location])
   const routes = [
     {
-      to: '/media',
+      to: '/newui/medias',
       icon: <></>,
       name: '媒體'
     },
     {
-      to: '/program',
+      to: '/newui/programs',
       icon: <></>,
       name: '節目'
     },
     {
-      name: '排成',
+      name: '排程',
       icon: <></>,
       childs: [
-        { value: '/daily', name: '日排成' },
-        { value: '/monthly', name: '月排成' }
+        { value: '/newui/daily', name: '單日節目表' },
+        { value: '/newui/schedule', name: '排程' }
       ]
     },
     {
       name: '腳本',
       icon: <></>,
       childs: [
-        { value: '/interaction', name: '互動' },
-        { value: '/event', name: '事件' }
+        { value: '/newui/interaction', name: '互動' },
+        { value: '/newui/event', name: '事件' }
       ]
     },
     {
       name: '派送',
       icon: <></>,
       childs: [
-        { value: '/dispatch', name: '派送' },
-        { value: '/status', name: '派送狀態' },
-        { value: '/history', name: '派送歷史' }
+        { value: '/newui/dispatch', name: '派送' },
+        { value: '/newui/status', name: '狀態' },
+        { value: '/newui/history', name: '歷史' }
       ]
     },
     {
-      to: '/device',
+      to: '/newui/device',
       icon: <></>,
       name: '設備'
     }

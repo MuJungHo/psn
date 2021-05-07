@@ -1,6 +1,14 @@
 import Program from '../views/Program'
 import Programs from '../views/Programs'
 import Medias from '../views/Medias'
+import Daily from '../views/Daily'
+import Schedule from '../views/Schedule'
+import Interaction from '../views/Interaction'
+import Event from '../views/Event'
+import Dispatch from '../views/Dispatch'
+import Status from '../views/Status'
+import History from '../views/History'
+import Device from '../views/Device'
 
 const routes = [
   {
@@ -14,6 +22,38 @@ const routes = [
   {
     path: '/newui/medias',
     component: Medias
+  },
+  {
+    path: '/newui/daily',
+    component: Daily
+  },
+  {
+    path: '/newui/schedule',
+    component: Schedule
+  },
+  {
+    path: '/newui/interaction',
+    component: Interaction
+  },
+  {
+    path: '/newui/event',
+    component: Event
+  },
+  {
+    path: '/newui/dispatch',
+    component: Dispatch
+  },
+  {
+    path: '/newui/status',
+    component: Status
+  },
+  {
+    path: '/newui/history',
+    component: History
+  },
+  {
+    path: '/newui/device',
+    component: Device
   },
 ]
 
