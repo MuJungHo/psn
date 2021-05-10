@@ -11,6 +11,7 @@ import Dispatch from '../views/Dispatch'
 import Status from '../views/Status'
 import History from '../views/History'
 import Device from '../views/Device'
+import Devices from '../views/Devices'
 
 const routes = [
   {
@@ -64,6 +65,10 @@ const routes = [
   {
     path: '/newui/device',
     component: Device
+  },
+  {
+    path: '/newui/devices',
+    component: Devices
   },
 ]
 

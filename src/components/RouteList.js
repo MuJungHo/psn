@@ -88,7 +88,7 @@ export default () => {
       ]
     },
     {
-      to: '/newui/device',
+      to: '/newui/devices',
       icon: <Setting/>,
       name: '設備'
     }

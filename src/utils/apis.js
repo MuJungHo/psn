@@ -30,3 +30,7 @@ export const getScList = params => postFormData('/psn/psn_mod/schedule.py', { cm
 
 //schedule
 export const getNsList = params => postFormData('/psn/psn_mod/schedule.py', { cmd: 'getNsList', ...params })
+
+//device
+export const getdplist = params => postFormData('/psn/psn_mod/dp.py', { cmd: 'getdplist', ...params })
+export const GetAllDp = params => postFormData('/psn/psn_mod/dp.py', { cmd: 'GetAllDp', ...params })
