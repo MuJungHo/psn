@@ -55,7 +55,7 @@ export default () => {
       icon: <Checkin/>,
       childs: [
         { value: '/newui/dailys', name: '單日節目表' },
-        { value: '/newui/schedule', name: '排程' }
+        { value: '/newui/schedules', name: '排程' }
       ]
     },
     {

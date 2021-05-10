@@ -91,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MiniDrawer() {
   const classes = useStyles();
   const { status } = useSelector(state => state.drawer)
+  const assets = process.env.REACT_APP_ASSETS
 
   return (
     <div className={classes.root}>
@@ -108,8 +109,8 @@ export default function MiniDrawer() {
         }}
       >
         {status 
-        ? <img src="../assets/logo.png" style={{ height: 20, margin: 'auto', marginTop: 30, marginBottom: 30 }} /> 
-        : <img src="../assets/SV.svg" style={{ height: 32, margin: '24px auto' }} />}
+        ? <img src={`${assets}/logo.png`} style={{ height: 20, margin: 'auto', marginTop: 30, marginBottom: 30 }} /> 
+        : <img src={`${assets}/SV.svg`} style={{ height: 32, margin: '24px auto' }} />}
         {status ? <RouteList /> : <ChildMenuList />}
       </Drawer>
     </div>
