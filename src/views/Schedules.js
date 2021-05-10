@@ -3,16 +3,22 @@ import { makeStyles } from '@material-ui/core/styles'
 import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
-import { getNsList } from '../utils/apis'
+import { getNsList, dispatchSch, getdplist } from '../utils/apis'
+import Select from '../components/material/Select'
+import InputGray from '../components/material/InputGray'
+import Arrow from "../icons/Arrow"
 import { useHistory } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import Actions from '../components/Actions'
 import {
   CardContent,
   CardMedia,
-  CircularProgress,
+  MenuItem,
 } from '@material-ui/core'
 
+import ConfirmDialog from '../components/ConfirmDialog'
+import AddToQueueIcon from '@material-ui/icons/AddToQueue';
+import { DatePicker } from 'rsuite'
 const useStyles = makeStyles({
   root: {
     width: '100%',
@@ -64,7 +70,13 @@ const useStyles = makeStyles({
 export default () => {
   const classes = useStyles()
   const history = useHistory();
+  const [schedule, setSchedule] = React.useState('')
   const [schedules, setSchedules] = React.useState([])
+  const [devices, setDevices] = React.useState([])
+  const [device, setDevice] = React.useState('')
+  const [dispatchTime, setDispatchTime] = React.useState(0)
+  const [dispatchDate, setDispatchDate] = React.useState(new Date())
+  const [dispatchDialogOpen, setDispatchDialogOpen] = React.useState(false)
   const { status } = useSelector(state => state.drawer)
   const mf = process.env.REACT_APP_MEDIA_PATH
   const psn = process.env.REACT_APP_PSN
@@ -77,9 +89,28 @@ export default () => {
             setSchedules([...schedules])
           }
         })
+        getdplist()
+          .then(response => {
+            convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+              if (!err) {
+                var tempDevices = result.root.dp_info.map(dp => ({ dpid: dp.dpid, dpname: dp.dpname }))
+                setDevices([...tempDevices])
+              }
+            })
+          })
       })
   }, [])
-
+  
+  const handleSetDispatchDialogOpen = (sch) => {
+    setSchedule(sch)
+    setDispatchDialogOpen(true)
+  }
+  const handleDispatch = () => {
+    var date = moment(dispatchDate).format('YYYYMMDD')
+    var time = moment(dispatchTime).format('HHmm')
+    dispatchSch({ dph_time: `${date}${time}`, start_time: '000101010000', dplst: device, uid: 1, nsid: schedule })
+      .then(res => console.log(res))
+  }
   return (
     <div className={classes.root}>
       <div className={classes.container}>
@@ -89,7 +120,7 @@ export default () => {
               key={key}
               className={classes.card}
               style={{
-                width: status ? '15.1%': '12.7%'
+                width: status ? '15.1%' : '12.7%'
               }}
             >
               <div style={{
@@ -100,7 +131,8 @@ export default () => {
               }}>
                 {schedule.nsname}
                 <div style={{ flex: 1 }} />
-                <Actions items={[]} />
+                <Actions items={[
+                  { icon: <AddToQueueIcon />, name: '派送', onClick: () => handleSetDispatchDialogOpen(schedule.nsid) }]} />
               </div>
               <CardMedia
                 className={classes.media}
@@ -114,6 +146,31 @@ export default () => {
           )
         }
       </div>
+      <ConfirmDialog
+        isDialogOpen={dispatchDialogOpen}
+        setDialogOpen={setDispatchDialogOpen}
+        titleText={'派送排程'}
+        content={
+          <>
+            <Select
+              input={<InputGray />}
+              IconComponent={Arrow}
+              value={device}
+              onChange={e => setDevice(e.target.value)}
+              displayEmpty
+            >
+              <MenuItem value=''>{'選擇播放器'}</MenuItem>
+              {
+                devices.map(device => <MenuItem value={device.dpid} key={device.dpid}>{device.dpname}</MenuItem>)
+              }
+            </Select>
+            <DatePicker value={dispatchDate} format="YYYY-MM-DD" onChange={e => setDispatchDate(e)} />
+            <DatePicker format="HH:mm" onChange={e => setDispatchTime(e)} />
+          </>
+        }
+        confirmText={'確認'}
+        confirm={handleDispatch}
+      />
     </div>
   )
 }
