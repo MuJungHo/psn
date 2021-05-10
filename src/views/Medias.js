@@ -4,6 +4,7 @@ import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
 import { getmedialist } from '../utils/apis'
+import { useSelector } from 'react-redux'
 import { useHistory } from "react-router-dom"
 import Actions from '../components/Actions'
 import {
@@ -39,9 +40,8 @@ const useStyles = makeStyles({
     flexWrap: 'wrap'
   },
   card: {
-    width: 260,
+    marginRight: '1.5%',
     marginBottom: 20,
-    marginRight: 14,
     height: 'auto',
     cursor: 'pointer',
     '&:hover': {
@@ -65,6 +65,7 @@ export default () => {
   const classes = useStyles()
   const history = useHistory();
   const [medias, setMedias] = React.useState([])
+  const { status } = useSelector(state => state.drawer)
   const mf = process.env.REACT_APP_MEDIA_PATH
   const psn = process.env.REACT_APP_PSN
   React.useEffect(() => {
@@ -97,6 +98,9 @@ export default () => {
             <Card
               key={key}
               className={classes.card}
+              style={{
+                width: status ? '15.1%': '12.7%'
+              }}
             >
               <div style={{
                 padding: '0 10px 0 20px',

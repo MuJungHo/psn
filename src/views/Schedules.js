@@ -5,6 +5,7 @@ import convert from 'xml2js'
 import moment from 'moment'
 import { getNsList } from '../utils/apis'
 import { useHistory } from "react-router-dom"
+import { useSelector } from 'react-redux'
 import Actions from '../components/Actions'
 import {
   CardContent,
@@ -39,9 +40,8 @@ const useStyles = makeStyles({
     flexWrap: 'wrap'
   },
   card: {
-    width: 260,
+    marginRight: '1.5%',
     marginBottom: 20,
-    marginRight: 14,
     height: 'auto',
     cursor: 'pointer',
     '&:hover': {
@@ -65,6 +65,7 @@ export default () => {
   const classes = useStyles()
   const history = useHistory();
   const [schedules, setSchedules] = React.useState([])
+  const { status } = useSelector(state => state.drawer)
   const mf = process.env.REACT_APP_MEDIA_PATH
   const psn = process.env.REACT_APP_PSN
   React.useEffect(() => {
@@ -87,6 +88,9 @@ export default () => {
             <Card
               key={key}
               className={classes.card}
+              style={{
+                width: status ? '15.1%': '12.7%'
+              }}
             >
               <div style={{
                 padding: '0 10px 0 20px',
@@ -94,7 +98,7 @@ export default () => {
                 alignItems: 'center',
                 fontSize: '1.2rem'
               }}>
-                {schedule.mtitle}
+                {schedule.nsname}
                 <div style={{ flex: 1 }} />
                 <Actions items={[]} />
               </div>
