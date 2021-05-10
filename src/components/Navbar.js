@@ -6,9 +6,14 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { setDrawerStatus } from '../actions/drawer'
+import IconButton from '@material-ui/core/IconButton';
+
 import Paper from '../components/material/Paper'
-import { makeStyles } from "@material-ui/core/styles"
-import { useSelector } from 'react-redux'
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux'
 const useStyles = makeStyles(theme => ({
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
@@ -17,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     })
   },
   appBarShift: {
-    marginLeft: 240,
+    marginLeft: 260,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.standard
@@ -33,24 +38,37 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 90,
+    height: 80,
     boxShadow: 'none',
   },
 }))
 export default () => {
   const { status } = useSelector(state => state.drawer)
   const classes = useStyles()
+  const theme = useTheme();
+  const dispatch = useDispatch()
+  const handleDrawerOpen = () => {
+    dispatch(setDrawerStatus(true))
+  };
+
+  const handleDrawerClose = () => {
+    dispatch(setDrawerStatus(false))
+  };
   return (
     <AppBar
       position="fixed"
       className={status ? classes.appBar : classes.appBarShift}
       style={{
         backgroundColor: '#f4f6f8',
-        width: status ? 'calc(100% - 240px)' : 'calc(100% - 73px)',
-        marginLeft: status ? 240 : 73,
+        width: status ? 'calc(100% - 260px)' : 'calc(100% - 100px)',
+        marginLeft: status ? 260 : 100,
         boxShadow: 'none',
       }}>
       <Paper className={classes.paper} >
+
+        <IconButton onClick={status ? handleDrawerClose : handleDrawerOpen}>
+          {status ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+        </IconButton>
         Navbar
       </Paper>
     </AppBar>

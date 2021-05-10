@@ -8,35 +8,37 @@ import Collapse from '@material-ui/core/Collapse';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    borderTop: '1px solid #393b4c',
     '& a.active li div:nth-child(1)': {
-      backgroundColor: '#5295FF'
+      backgroundColor: '#f31d65'
     },
     '& a.active span': {
-      color: '#5295FF'
+      color: '#f31d65'
     }
   },
   nested: {
     paddingLeft: 20,
     '& span': {
       fontSize: '.8rem',
-      color: '#bebebe',
+      color: '#a0a4ad',
     },
     '& div:nth-child(1)': {
       backgroundColor: '#bebebe'
     },
     '&:hover': {
+      backgroundColor: 'rgba(243, 29, 101, 0.1)',
       '& div:nth-child(1)': {
-        backgroundColor: '#5295FF'
+        backgroundColor: '#f31d65'
       },
       '& div:nth-child(2) span': {
-        color: '#5295FF'
+        color: '#f31d65'
       }
     }
   },
   node: {
     cursor: 'pointer',
     '&:hover': {
-      backgroundColor: 'rgba(82, 149, 255, 0.4)!important'
+      backgroundColor: 'rgba(243, 29, 101, 0.4)!important'
     }
   },
 
@@ -57,8 +59,8 @@ export default props => {
   return (
     <div className={classes.root}>
       <ListItem onClick={handleClick} className={classes.node} style={{
-        color: isActive ? '#fff' : '#bebebe',
-        backgroundColor: isActive ? '#5295FF' : 'transparent'
+        color: '#fff',
+        backgroundColor: isActive ? '#f31d65' : 'transparent'
       }}>
         {icon}
         <ListItemText primary={name} />

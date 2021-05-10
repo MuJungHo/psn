@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     overflow: 'auto',
     boxSizing: 'border-box',
-    marginTop: 90,
+    marginTop: 80,
     minHeight: 'calc(100vh - 90px)',
     display: 'flex',
     flex: 1,
@@ -31,7 +31,7 @@ const PrivateRoute = ({
   return (
 
     <div id="content" className={classes.content} style={{
-      marginLeft: status ? 240 : 73
+      marginLeft: status ? 260 : 100
     }}>
       <Route
         {...rest}

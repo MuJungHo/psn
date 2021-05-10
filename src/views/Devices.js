@@ -62,7 +62,7 @@ function EnhancedTableHead(props) {
 
   const headCells = [
     { id: 'dpname', numeric: false, disablePadding: false, label: '設備名稱' },
-    { id: 'edition', numeric: false, disablePadding: false, label: '啟用狀態' },
+    { id: 'edition', numeric: false, disablePadding: false, label: '設備狀態' },
     { id: 'udname', numeric: false, disablePadding: false, label: '部門名稱' },
     { id: 'dpver', numeric: false, disablePadding: false, label: '設備版本' },
     { id: 'dpos', numeric: false, disablePadding: false, label: '作業系統' },

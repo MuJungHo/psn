@@ -17,21 +17,20 @@ import {
 
 const useStyles = makeStyles(() => ({
   root: {
-    marginTop: 20,
-    marginLeft: 14,
     '& a.active > li': {
-      backgroundColor: '#5295FF'
+      backgroundColor: '#f31d65'
     }
   },
   node: {
-    width: 42,
-    height: 45,
+    width: 100,
+    height: 70,
     padding: 0,
+    borderTop: '1px solid #393b4c',
     '& svg': {
       margin: 'auto'
     },
     '&:hover': {
-      backgroundColor: 'rgba(82, 149, 255, 0.4)!important'
+      backgroundColor: 'rgba(243, 29, 101, 0.4)!important'
     }
   }
 }))
@@ -56,7 +55,7 @@ export default () => {
       icon: <Checkin/>,
       childs: [
         { value: '/newui/dailys', name: '單日節目表' },
-        { value: '/newui/schedules', name: '排程' }
+        { value: '/newui/schedule', name: '排程' }
       ]
     },
     {

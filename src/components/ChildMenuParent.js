@@ -11,18 +11,18 @@ import {
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: 50,
+    width: 100,
     cursor: 'pointer',
   },
   node: {
-    width: 42,
-    height: 45,
+    height: 70,
     padding: 0,
+    borderTop: '1px solid #393b4c',
     '& svg': {
       margin: 'auto'
     },
     '&:hover': {
-      backgroundColor: 'rgba(82, 149, 255, 0.4)!important'
+      backgroundColor: 'rgba(243, 29, 101, 0.4)!important'
     }
   },
   title: {
@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
   },
   nested: {
     '&:hover': {
-      backgroundColor: 'rgba(82, 149, 255, 0.4)!important',
+      backgroundColor: 'rgba(243, 29, 101, 0.4)!important',
       '& span': {
         color: '#fff'
       }
@@ -64,7 +64,7 @@ export default props => {
     >
       <ListItem
         className={classes.node} style={{
-          backgroundColor: isActive ? '#5295FF' : 'transparent'
+          backgroundColor: isActive ? '#f31d65' : 'transparent'
         }}
       >
         {icon}
@@ -77,8 +77,8 @@ export default props => {
               position: 'fixed',
               backgroundColor: '#21223f',
               color: '#fff',
-              left: 45,
-              top: top
+              left: 95,
+              top: top,
             }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleClose}

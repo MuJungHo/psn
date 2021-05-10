@@ -20,12 +20,13 @@ import message from '../i18n'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: '0 10px',
     '& > *:not(:first-child)': {
-      marginTop: 10
+      // marginTop: 10
     },
     '& * > li': {
-      borderRadius: 10
+      // borderRadius: 10,
+      paddingTop: 20 ,
+      paddingBottom: 20 ,
     },
     '& * > li:hover span': {
       color: '#fff'
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
       marginRight: 20
     },
     '& a.active > li': {
-      backgroundColor: '#5295FF'
+      backgroundColor: '#f31d65'
     },
     '& a.active > li span': {
       color: '#fff'
@@ -44,10 +45,11 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
   },
   node: {
-    color: '#bebebe',
+    color: '#fff',
+    borderTop: '1px solid #393b4c',
     // transition: 'background-color 0.2s ease',
     '&:hover': {
-      backgroundColor: 'rgba(82, 149, 255, 0.4)'
+      backgroundColor: 'rgba(243, 29, 101, 0.4)'
     }
   }
 }));
@@ -99,11 +101,10 @@ export default () => {
       aria-labelledby="nested-list-subheader"
       className={classes.root}
       style={{
-        width: 'calc(100% - 42px)',
-        marginLeft: 20,
         backgroundColor: 'transparent',
         overflow: 'auto',
-        marginTop: 10
+        paddingTop: 0,
+        paddingBottom: 0,
       }}
     >
       {

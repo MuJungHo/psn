@@ -21,7 +21,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import RouteList from './RouteList'
 import ChildMenuList from './ChildMenuList'
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,10 +66,10 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    width: theme.spacing(7) + 1,
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
-    },
+    width: 100 + 1,
+    // [theme.breakpoints.up('sm')]: {
+    //   width: theme.spacing(9) + 1,
+    // },
   },
   toolbar: {
     display: 'flex',
@@ -83,46 +83,34 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  paper: {
+    background: '#222538'
+  }
 }));
 
 export default function MiniDrawer() {
   const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
-
-  const dispatch = useDispatch()
-  const handleDrawerOpen = () => {
-    setOpen(true);
-    dispatch(setDrawerStatus(true))
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-    dispatch(setDrawerStatus(false))
-  };
+  const { status } = useSelector(state => state.drawer)
 
   return (
     <div className={classes.root}>
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
+          [classes.drawerOpen]: status,
+          [classes.drawerClose]: !status,
         })}
         classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
+          paper: clsx(classes.paper, {
+            [classes.drawerOpen]: status,
+            [classes.drawerClose]: !status,
           }),
         }}
       >
-        <div className={classes.toolbar}>
-          <IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-        {open ? <RouteList /> : <ChildMenuList />}
+        {status 
+        ? <img src="../assets/logo.png" style={{ height: 20, margin: 'auto', marginTop: 30, marginBottom: 30 }} /> 
+        : <img src="../assets/SV.svg" style={{ height: 32, margin: '24px auto' }} />}
+        {status ? <RouteList /> : <ChildMenuList />}
       </Drawer>
     </div>
   );
