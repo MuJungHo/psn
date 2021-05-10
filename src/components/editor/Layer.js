@@ -114,7 +114,7 @@ export default ({
     if (layer.file) {
       return `${mf}/_preview/${layer.file.split('.')[0]}.jpg`
     } else {
-      return `${psn}/images/module/ico-${layer.type}.png`
+      return `${psn}/images/module/ico-${layer.type}.svg`
     }
   }
   const focus = () => {

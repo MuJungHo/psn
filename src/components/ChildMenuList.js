@@ -18,7 +18,7 @@ import {
 const useStyles = makeStyles(() => ({
   root: {
     marginTop: 20,
-    marginLeft: 5,
+    marginLeft: 14,
     '& a.active > li': {
       backgroundColor: '#5295FF'
     }
@@ -39,50 +39,40 @@ export default () => {
   const classes = useStyles();
   let location = useLocation();
   const [pathname, setPathname] = React.useState(null)
-  const { locale } = useSelector(state => state.locale)
-  const isComOwner = localStorage.getItem('rl') === '5000'
 
   const routes = [
     {
-      to: '/dashboard',
-      icon: <Analysis />,
-      name: message(locale, 'siderAnalysis')
+      to: '/newui/medias',
+      icon: <Analysis/>,
+      name: '媒體'
     },
     {
-      name: message(locale, 'siderRegister'),
-      icon: <Form />,
+      to: '/newui/programs',
+      icon: <Form/>,
+      name: '節目'
+    },
+    {
+      name: '排程',
+      icon: <Checkin/>,
       childs: [
-        { value: '/formlist', name: message(locale, 'siderForm') },
-        { value: '/reviews', name: message(locale, 'siderReview') }
+        { value: '/newui/dailys', name: '單日節目表' },
+        { value: '/newui/schedules', name: '排程' }
       ]
     },
     {
-      to: '/visitors',
-      icon: <Checkin />,
-      name: message(locale, 'siderVisitor')
-    },
-    {
-      name: message(locale, 'siderCheckin'),
-      icon: <Pad />,
+      name: '派送',
+      icon: <Pad/>,
       childs: [
-        { value: '/layout', name: message(locale, 'siderLayout') },
-        { value: '/device', name: message(locale, 'siderDevice') }
+        { value: '/newui/dispatch', name: '派送' },
+        { value: '/newui/status', name: '狀態' },
+        { value: '/newui/history', name: '歷史' }
       ]
     },
     {
-      name: message(locale, 'siderSetting'),
-      icon: <Setting />,
-      childs: isComOwner
-        ? [
-          { value: '/departments', name: message(locale, 'siderDepartment') },
-          { value: '/users', name: message(locale, 'siderUser') },
-          { value: '/billing', name: message(locale, 'siderBilling') }
-        ]
-        : [
-          { value: '/users', name: message(locale, 'siderUser') },
-          { value: '/billing', name: message(locale, 'siderBilling') }
-        ]
-    },
+      to: '/newui/device',
+      icon: <Setting/>,
+      name: '設備'
+    }
   ]
   React.useEffect(() => {
     setPathname(location.pathname)

@@ -2,7 +2,9 @@ import Program from '../views/Program'
 import Programs from '../views/Programs'
 import Medias from '../views/Medias'
 import Daily from '../views/Daily'
+import Dailys from '../views/Dailys'
 import Schedule from '../views/Schedule'
+import Schedules from '../views/Schedules'
 import Interaction from '../views/Interaction'
 import Event from '../views/Event'
 import Dispatch from '../views/Dispatch'
@@ -28,8 +30,16 @@ const routes = [
     component: Daily
   },
   {
+    path: '/newui/dailys',
+    component: Dailys
+  },
+  {
     path: '/newui/schedule',
     component: Schedule
+  },
+  {
+    path: '/newui/schedules',
+    component: Schedules
   },
   {
     path: '/newui/interaction',

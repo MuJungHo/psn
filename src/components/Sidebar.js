@@ -20,6 +20,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import RouteList from './RouteList'
+import ChildMenuList from './ChildMenuList'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -121,7 +122,7 @@ export default function MiniDrawer() {
           </IconButton>
         </div>
         <Divider />
-        {open ? <RouteList /> : null}
+        {open ? <RouteList /> : <ChildMenuList />}
       </Drawer>
     </div>
   );

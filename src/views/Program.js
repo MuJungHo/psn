@@ -92,7 +92,7 @@ export default () => {
     var layout = layers.map(layer => `${layer.left / zoom},${layer.top / zoom},${layer.width / zoom},${layer.height / zoom}`).join('|')
     var ptid = layers.map(layer => layer.ptid).join('|')
     var params = {
-      pgid: 17,
+      pgid: pgid,
       uid: 1,
       select_udid: 1,
       pgid_tmp: tempPgid,
@@ -137,11 +137,7 @@ export default () => {
     })
   }
   const handleCaptureScreen = () => {
-    html2canvas(document.getElementById('board'), {
-      useCORS: true,
-      allowTaint: true,
-      proxy: 'http://127.0.0.1/mf'
-    }).then(canvas => {
+    html2canvas(document.getElementById('board')).then(canvas => {
       var imgBase64 = canvas.toDataURL()
       postScreenshot({ previewPgid: pgid, previewPgname: 'IU Love Me', imgBase64, flag: 0 }).then(() => {
         postScreenshot({ previewPgid: pgid, previewPgname: 'IU Love Me', imgBase64, flag: 1 })

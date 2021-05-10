@@ -2,6 +2,11 @@ import React from 'react';
 import { NavLink } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux'
+import Analysis from "../icons/Analysis"
+import Form from "../icons/Form"
+import Checkin from "../icons/Checkin"
+import Pad from "../icons/Pad"
+import Setting from "../icons/Setting"
 
 import {
   List,
@@ -57,33 +62,25 @@ export default () => {
   const routes = [
     {
       to: '/newui/medias',
-      icon: <></>,
+      icon: <Analysis/>,
       name: '媒體'
     },
     {
       to: '/newui/programs',
-      icon: <></>,
+      icon: <Form/>,
       name: '節目'
     },
     {
       name: '排程',
-      icon: <></>,
+      icon: <Checkin/>,
       childs: [
-        { value: '/newui/daily', name: '單日節目表' },
-        { value: '/newui/schedule', name: '排程' }
-      ]
-    },
-    {
-      name: '腳本',
-      icon: <></>,
-      childs: [
-        { value: '/newui/interaction', name: '互動' },
-        { value: '/newui/event', name: '事件' }
+        { value: '/newui/dailys', name: '單日節目表' },
+        { value: '/newui/schedules', name: '排程' }
       ]
     },
     {
       name: '派送',
-      icon: <></>,
+      icon: <Pad/>,
       childs: [
         { value: '/newui/dispatch', name: '派送' },
         { value: '/newui/status', name: '狀態' },
@@ -92,7 +89,7 @@ export default () => {
     },
     {
       to: '/newui/device',
-      icon: <></>,
+      icon: <Setting/>,
       name: '設備'
     }
   ]
