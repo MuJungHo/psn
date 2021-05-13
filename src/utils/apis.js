@@ -23,6 +23,8 @@ export const getPgInfo = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'ge
 export const getPgPreviewInfoFromEdit = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgPreviewInfoFromEdit', ...params })
 export const getPgLstByUdid = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgLstByUdid', ...params })
 export const postScreenshot = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'postScreenshot', ...params })
+export const getPgctInfo = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgctInfo', ...params })
+export const updatePgct = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'updatePgct', ...params })
 
 
 //daily

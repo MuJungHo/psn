@@ -110,11 +110,11 @@ export default ({
     }
   }
   const filePath = () => {
-    if (layer.type === 'btn' && layer.mdesc !== '') return `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}_0.png`
+    if (layer.mtype === 'btn' && layer.mdesc !== '') return `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}_0.png`
     if (layer.file) {
       return `${mf}/_preview/${layer.file.split('.')[0]}.jpg`
     } else {
-      return `${psn}/images/module/ico-${layer.type}.svg`
+      return `${psn}/images/module/ico-${layer.mtype}.svg`
     }
   }
   const focus = () => {

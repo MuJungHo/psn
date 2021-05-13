@@ -3,16 +3,19 @@ import Layer from './Layer'
 export default ({
   layers,
   setLayers,
-  boardWidth,
-  boardHeight,
-  program
+  width,
+  height,
+  top,
+  left,
+  program,
+  activeLayer,
+  setActiveLayer,
+  boardRef
 }) => {
-  const board = React.useRef()
   const fill = program.bgcolor ? `#${program.bgcolor.substring(3, 9)}` : '#ffffff'
-  const [activeLayer, setActiveLayer] = React.useState({})
   return (
-    <svg id="board" xmlns="http://www.w3.org/2000/svg" version="1.1" width={boardWidth} height={boardHeight} ref={board} style={{ margin: 20 }} >
-      <rect width={boardWidth} height={boardHeight} x="0" y="0" fill={fill}></rect>
+    <>
+      <rect width={width} height={height} x={left} y={top} fill={fill} fillOpacity={program.bgimage ? 0 : 1}></rect>
       {
         layers.map(layer =>
           <Layer
@@ -20,12 +23,12 @@ export default ({
             layer={layer}
             layers={layers}
             setLayers={setLayers}
-            board={board}
+            board={boardRef}
             program={program}
             activeLayer={activeLayer}
             setActiveLayer={setActiveLayer}
           />)
       }
-    </svg>
+    </>
   )
 }
