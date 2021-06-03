@@ -13,6 +13,7 @@ const postFormData = (uri, data) => {
   return instance.post(uri, formData)
 }
 
+
 //media
 export const getmedialist = params => postFormData('/psn/psn_mod/media.py', { cmd: 'getmedialist', ...params })
 export const saveLabelInfo = params => postFormData('/psn/psn_mod/media.py', { cmd: 'saveLabelInfo', ...params })
@@ -24,7 +25,11 @@ export const getPgPreviewInfoFromEdit = params => postFormData('/psn/psn_mod/pg.
 export const getPgLstByUdid = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgLstByUdid', ...params })
 export const postScreenshot = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'postScreenshot', ...params })
 export const getPgctInfo = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgctInfo', ...params })
-export const updatePgct = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'updatePgct', ...params })
+export const updatePgct = data => instance({
+  method: "post",
+  url: '/psn/psn_mod/pg.py',
+  data
+})
 
 
 //daily

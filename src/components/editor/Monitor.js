@@ -10,12 +10,13 @@ export default ({
   program,
   activeLayer,
   setActiveLayer,
-  boardRef
+  boardRef,
+  board
 }) => {
   const fill = program.bgcolor ? `#${program.bgcolor.substring(3, 9)}` : '#ffffff'
   return (
     <>
-      <rect width={width} height={height} x={left} y={top} fill={fill} fillOpacity={program.bgimage ? 0 : 1}></rect>
+      <rect onClick={() => setActiveLayer({})} width={width} height={height} x={left} y={top} fill={fill} fillOpacity={program.bgimage ? 0 : 1}></rect>
       {
         layers.map(layer =>
           <Layer
@@ -27,6 +28,7 @@ export default ({
             program={program}
             activeLayer={activeLayer}
             setActiveLayer={setActiveLayer}
+            workSpace={board}
           />)
       }
     </>

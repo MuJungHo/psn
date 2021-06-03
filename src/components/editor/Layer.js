@@ -8,7 +8,8 @@ export default ({
   layers,
   program,
   activeLayer,
-  setActiveLayer
+  setActiveLayer,
+  workSpace
 }) => {
   const mf = process.env.REACT_APP_MEDIA_PATH
   const psn = process.env.REACT_APP_PSN
@@ -75,8 +76,8 @@ export default ({
     var newBottom = layer.top + e.y - start.top + layer.height
     if (newLeft < 0) newLeft = 0
     if (newTop < 0) newTop = 0
-    if (newRight > 960) newLeft = 960 - layer.width
-    if (newBottom > 540) newTop = 540 - layer.height
+    if (newRight > workSpace.width) newLeft = workSpace.width - layer.width
+    if (newBottom > workSpace.height) newTop = workSpace.height - layer.height
     if (layerYs.some(layerY => Math.abs(layerY - newLeft) < 10)) {
       newLeft = layerYs.find(layerY => Math.abs(layerY - newLeft) < 10)
     }
@@ -110,7 +111,11 @@ export default ({
     }
   }
   const filePath = () => {
-    if (layer.mtype === 'btn' && layer.mdesc !== '') return `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}_0.png`
+    if (layer.mtype === 'btn') {
+      return layer.btn_bg_mid === '0'
+        ? `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}_0.png`
+        : `${mf}/_preview/${layer.btn_bg_mname.split('.')[0]}.jpg`
+    }
     if (layer.file) {
       return `${mf}/_preview/${layer.file.split('.')[0]}.jpg`
     } else {
@@ -126,7 +131,7 @@ export default ({
   return (
     <g
       onFocus={focus}
-      onBlur={blur}
+      // onBlur={blur}
       tabIndex="-1"
     >
       <rect

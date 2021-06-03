@@ -8,6 +8,8 @@ import moment from 'moment'
 import { getPgInfo, getPgPreviewInfoFromEdit, savePgInfo, saveLabelInfo, postScreenshot, getPgctInfo, updatePgct } from '../utils/apis'
 import { useHistory } from "react-router-dom"
 import html2canvas from 'html2canvas'
+import { v4 as uuid } from 'uuid'
+
 export default () => {
   const { pgid } = useParams()
   const history = useHistory();
@@ -16,8 +18,9 @@ export default () => {
   const [monitors, setMonitors] = React.useState([])
   const [zoom, setZoom] = React.useState(1)
   const [program, setProgram] = React.useState({})
-  const [tempPgid, setTempPgid] = React.useState()
+  const [pgid_tmp, setTempPgid] = React.useState()
   const [tempFolderId, setTempFolderId] = React.useState()
+  const [targetFolder, setTargetFolderId] = React.useState()
   const { status } = useSelector(state => state.drawer)
   const space = {
     width: window.innerWidth - 260 - 300 - 150,
@@ -25,7 +28,6 @@ export default () => {
     top: 0,
     left: 0
   }
-  console.log()
   const [board, setBoard] = React.useState({})
   const uid = localStorage.getItem('login_uid') || 1
   React.useEffect(() => {
@@ -57,9 +59,19 @@ export default () => {
             })
             setTempPgid(preview_pgid_tmp)
             setTempFolderId(result.root.pginfo.tempFolderId)
+            setTargetFolderId(result.root.pginfo.targetFolder)
             setZoom(result.root.pginfo.w >= result.root.pginfo.h
               ? space.width / result.root.pginfo.w
               : space.height / result.root.pginfo.h)
+            if (result.root.pginfo.lbl_info) {
+              if (Object.keys(result.root.pginfo.lbl_info)[0] === 'label') {
+                tempLayers = tempLayers.map(layer => {
+                  return result.root.pginfo.lbl_info.label.$.ptid === layer.ptid
+                    ? { ...layer, ...result.root.pginfo.lbl_info.label }
+                    : { ...layer }
+                })
+              }
+            }
             getPgPreviewInfoFromEdit({ preview_pgid_tmp }).then(response => {
               convert.parseString(response.data, { explicitArray: false }, async (err, result) => {
                 if (!err) {
@@ -67,7 +79,12 @@ export default () => {
                     var layerTemp = {}
                     if (result.root.partitions.partition) {
                       if (Object.keys(result.root.partitions.partition)[0] === '$') {
-                        if (layer.ptid === result.root.partitions.partition.$.ptid) layerTemp = { mtype: result.root.partitions.partition.$.type }
+                        if (layer.ptid === result.root.partitions.partition.$.ptid) layerTemp = {
+                          mtype: result.root.partitions.partition.$.type,
+                          argv: result.root.partitions.partition.$.argv,
+                          file: result.root.partitions.partition.$.file,
+                          time: result.root.partitions.partition.$.time,
+                        }
                       }
                       else {
                         var layerTemps = result.root.partitions.partition.map(layer => layer.$)
@@ -79,7 +96,7 @@ export default () => {
                       ...layer,
                     }
                   })
-                  var getPgctInfos = tempLayers.map(layer => getPgctInfo({ pgid, pgid_tmp: preview_pgid_tmp, ptid: layer.ptid, mtype: layer.type }))
+                  var getPgctInfos = tempLayers.map(layer => getPgctInfo({ pgid, pgid_tmp: preview_pgid_tmp, ptid: layer.ptid, mtype: layer.mtype }))
 
                   await Promise.all(getPgctInfos).then(resXMLs => {
                     setLoading(false)
@@ -97,10 +114,14 @@ export default () => {
                       var layerInfos = []
                       if (tempLayer.pgct_info) {
                         if (Object.keys(tempLayer.pgct_info)[0] === '0') {
-                          layerInfos = [...tempLayer.pgct_info]
+                          layerInfos = [...tempLayer.pgct_info.map(pgct => ({ ...pgct, uuid: uuid() }))]
                         } else {
-                          layerInfos = [{ ...tempLayer.pgct_info }]
+                          layerInfos = [{ ...tempLayer.pgct_info, uuid: uuid() }]
                         }
+                      }
+                      //後端bug，待釐清
+                      if (layer.mtype === 'btn' && layerInfos.length > 2) {
+                        layerInfos = layerInfos.filter(layer => layer.mid !== '0')
                       }
 
                       return {
@@ -139,7 +160,7 @@ export default () => {
       pgid: pgid,
       uid: 1,
       select_udid: 1,
-      pgid_tmp: tempPgid,
+      pgid_tmp,
       pgname: program.pgname,
       bgcolor: '#FF000000',
       bgimage: program.bgimage,
@@ -177,25 +198,29 @@ export default () => {
       tbl_argv: '',
     }
 
-    var updatePgcts = layers.map(layer => {
-      var pgctParams = {}
-      var pgcts = layer.layerInfos.map((info, index) => ({
-        pgct_chk: index + 1,
-        [`mid_${index + 1}`]: info.mid,
-        [`odr_${index + 1}`]: info.odr,
-        [`thumbnail_mid_${index + 1}`]: info.thumbnail_mid,
-        [`argv_${index + 1}`]: info.argv,
-        [`rpt_${index + 1}`]: info.rpt,
-        [`t_${index + 1}`]: info.t,
-        [`mid_${index + 1}`]: info.mid
-      }))
-      Object.assign(pgctParams, ...pgcts)
-      return updatePgct({ ...pgctParams, ptid: layer.ptid, mtype: layer.mtype, pgid, tempFolderId, tempFolderId })
-    })
-    await Promise.all(updatePgcts).then(() => {
-      savePgInfo({ ...params }).then(async () => {
-        handleCaptureScreen()
+    layers.forEach(async (layer, i) => {
+      const formData = new FormData()
+      layer.layerInfos.forEach((info, index) => {
+        formData.append('pgct_chk', index + 1)
+        formData.append(`mid_${index + 1}`, info.mid)
+        formData.append(`odr_${index + 1}`, info.odr)
+        formData.append(`thumbnail_mid_${index + 1}`, '../mf/_preview/00000002.jpg')
+        formData.append(`argv_${index + 1}`, info.argv)
+        formData.append(`rpt_${index + 1}`, info.rpt)
+        formData.append(`t_${index + 1}`, info.t)
       })
+      formData.append('cmd', 'updatePgct')
+      formData.append('pgid_tmp', pgid_tmp)
+      formData.append('pgid', pgid)
+      formData.append('targetFolder', targetFolder)
+      formData.append('tempFolderId', tempFolderId)
+      formData.append('ptid', i + 1)
+      formData.append('mtype', layer.mtype)
+      formData.append('idx', i + 1)
+      await updatePgct(formData)
+    })
+    savePgInfo({ ...params }).then(async () => {
+      handleCaptureScreen()
     })
   }
   const handleCaptureScreen = () => {
@@ -206,7 +231,7 @@ export default () => {
       })
     })
   }
-  
+
   return (
     <Editor
       layers={layers}
