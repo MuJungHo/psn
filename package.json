@@ -104,7 +104,8 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=node",
     "svg": "svgr -d src/icons/ public/assets/",
-    "build:dev": "env-cmd -f .env.dev node scripts/build.js"
+    "build:dev": "env-cmd -f .env.dev node scripts/build.js",
+    "build:local": "env-cmd -f .env.local node scripts/build.js"
   },
   "browserslist": [
     ">0.2%",
