@@ -84,7 +84,7 @@ export default () => {
       })
   }, [])
   const getMediaPath = media => {
-    if (media.mtype === 'image') return `${mf}/_preview/${media.mname}?t=${moment().unix()}`
+    if (media.mtype === 'image') return `${mf}/_preview/${media.mname.split('.')[0]}.jpg?t=${moment().unix()}`
     if (media.mtype === 'video') return `${mf}/_preview/${media.mname.split('.')[0]}.jpg?t=${moment().unix()}`
     if (media.mtype === 'board') return `${psn}/images/preview/${media.mtype}.png`
     if (media.mtype === 'stxt') return `${psn}/images/preview/ticker.png`

@@ -114,9 +114,9 @@ export default () => {
                       var layerInfos = []
                       if (tempLayer.pgct_info) {
                         if (Object.keys(tempLayer.pgct_info)[0] === '0') {
-                          layerInfos = [...tempLayer.pgct_info.map(pgct => ({ ...pgct, uuid: uuid() }))]
+                          layerInfos = [...tempLayer.pgct_info.map(pgct => ({ ...pgct, uuid: uuid(), thumbnail_mid: `../mf/_preview/${pgct.mname.split('.')[0]}.jpg` }))]
                         } else {
-                          layerInfos = [{ ...tempLayer.pgct_info, uuid: uuid() }]
+                          layerInfos = [{ ...tempLayer.pgct_info, uuid: uuid(), thumbnail_mid: `../mf/_preview/${tempLayer.pgct_info.mname.split('.')[0]}.jpg` }]
                         }
                       }
                       //後端bug，待釐清
@@ -203,8 +203,8 @@ export default () => {
       layer.layerInfos.forEach((info, index) => {
         formData.append('pgct_chk', index + 1)
         formData.append(`mid_${index + 1}`, info.mid)
-        formData.append(`odr_${index + 1}`, info.odr)
-        formData.append(`thumbnail_mid_${index + 1}`, '../mf/_preview/00000002.jpg')
+        formData.append(`odr_${index + 1}`, index + 1)
+        formData.append(`thumbnail_mid_${index + 1}`, info.thumbnail_mid)
         formData.append(`argv_${index + 1}`, info.argv)
         formData.append(`rpt_${index + 1}`, info.rpt)
         formData.append(`t_${index + 1}`, info.t)

@@ -10,6 +10,7 @@ import Delete from '@material-ui/icons/Delete'
 import { useHistory } from "react-router-dom"
 import { Backdrop, CircularProgress } from '@material-ui/core';
 import { v4 as uuid } from 'uuid'
+import PickDialog from '../PickDialog'
 
 const mf = process.env.REACT_APP_MEDIA_PATH
 const ProgramContent = props => {
@@ -66,6 +67,7 @@ const ButtonLayerContent = props => {
 }
 const ImageLayerContent = props => {
   const { activeLayer, layers, setLayers } = props
+  const [isDialogOpen, setDialogOpen] = React.useState(false)
   const handleUpdateLayer = (e, uuid) => {
     var updatedLayers = layers.map(layer => {
       return layer.ptid === activeLayer.ptid
@@ -82,38 +84,46 @@ const ImageLayerContent = props => {
     setLayers([...updatedLayers])
   }
   const handleAddLayerInfo = () => {
+    setDialogOpen(true)
+  }
+  const doAddLayerInfo = medias => {
+    var newMediaInfos = medias.map(media => ({
+      argv: "0",
+      browser: "",
+      filetype: "image",
+      interaction_pt_name: "",
+      isdefault: "",
+      isenabled: "",
+      margv: "",
+      mdesc: "",
+      mh: "1280",
+      mid: media.mid,
+      mname: media.mname,
+      mtitle:  media.mtitle,
+      mw: "1026",
+      odr: "1",
+      player: "",
+      plid: "0",
+      plname: "",
+      rpt: "1",
+      scale: "",
+      t: "90",
+      thumbnail_mid: `../mf/_preview/${media.mname.split('.')[0]}.jpg`,
+      uuid: uuid(),
+      ytFlag: "",
+    }))
     var updatedLayers = layers.map(layer => {
       return layer.ptid === activeLayer.ptid
         ? {
           ...layer,
-          layerInfos: [...layer.layerInfos, {
-            argv: "0",
-            browser: "",
-            filetype: "image",
-            interaction_pt_name: "",
-            isdefault: "",
-            isenabled: "",
-            margv: "",
-            mdesc: "",
-            mh: "1280",
-            mid: "2",
-            mname: "00000002.jpg",
-            mtitle: "198964",
-            mw: "1026",
-            odr: "1",
-            player: "",
-            plid: "0",
-            plname: "",
-            rpt: "1",
-            scale: "",
-            t: "90",
-            thumbnail_mid: "",
-            uuid: uuid(),
-            ytFlag: "",
-          }]
+          layerInfos: [
+            ...layer.layerInfos, 
+            ...newMediaInfos
+          ]
         }
         : { ...layer }
     })
+    console.log(updatedLayers)
     setLayers([...updatedLayers])
   }
   const handleDeleteLayerInfo = (layerInfoUUID) => {
@@ -132,10 +142,20 @@ const ImageLayerContent = props => {
       <ActionButton onClick={handleAddLayerInfo} >
         <Add />
       </ActionButton>
+      <PickDialog
+        isDialogOpen={isDialogOpen}
+        setDialogOpen={setDialogOpen}
+        titleText={'pick media'}
+        target="media"
+        mtype="image"
+        mutiple
+        confirmText={'確認'}
+        confirm={doAddLayerInfo}
+      />
       {
         activeLayer.layerInfos.map(layerInfo =>
           <div key={layerInfo.uuid}>
-            <img src={`${mf}/_preview/${layerInfo.mname}`} style={{ height: 30 }} />
+            <img src={`${mf}/_preview/${layerInfo.mname.split('.')[0]}.jpg`} style={{ height: 30 }} />
             {layerInfo.mtitle}
             {layerInfo.t}
             {/* <TextField
