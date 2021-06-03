@@ -31,6 +31,7 @@
     "deep-object-diff": "^1.1.0",
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^6.6.0",
     "eslint-config-react-app": "^5.2.1",
     "eslint-loader": "3.0.3",
@@ -102,7 +103,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=node",
-    "svg": "svgr -d src/icons/ public/assets/"
+    "svg": "svgr -d src/icons/ public/assets/",
+    "build:dev": "env-cmd -f .env.dev node scripts/build.js"
   },
   "browserslist": [
     ">0.2%",
