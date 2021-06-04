@@ -67,8 +67,8 @@ export default () => {
   const history = useHistory();
   const [programs, setPrograms] = React.useState([])
   const { status } = useSelector(state => state.drawer)
-  const mf = process.env.REACT_APP_MEDIA_PATH
-  const psn = process.env.REACT_APP_PSN
+  const mf = process.env.REACT_APP_DOMAIN + '/mf'
+  const psn = process.env.REACT_APP_DOMAIN + '/psn'
   React.useEffect(() => {
     getPgLstByUdid({}).then(response => {
       convert.parseString(response.data, { explicitArray: false }, (err, result) => {

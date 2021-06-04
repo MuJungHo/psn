@@ -78,8 +78,8 @@ export default () => {
   const [dispatchDate, setDispatchDate] = React.useState(new Date())
   const [dispatchDialogOpen, setDispatchDialogOpen] = React.useState(false)
   const { status } = useSelector(state => state.drawer)
-  const mf = process.env.REACT_APP_MEDIA_PATH
-  const psn = process.env.REACT_APP_PSN
+  const mf = process.env.REACT_APP_DOMAIN + '/mf'
+  const psn = process.env.REACT_APP_DOMAIN + '/psn'
   React.useEffect(() => {
     getNsList({ sel_udid: 1, sortType: 0 })
       .then((response) => {

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_DOMAIN,
+  baseURL: process.env.REACT_APP_DOMAIN + '/psn/psn_mod',
   timeout: 10000
 })
 
@@ -15,32 +15,32 @@ const postFormData = (uri, data) => {
 
 
 //media
-export const getmedialist = params => postFormData('/psn/psn_mod/media.py', { cmd: 'getmedialist', ...params })
-export const saveLabelInfo = params => postFormData('/psn/psn_mod/media.py', { cmd: 'saveLabelInfo', ...params })
+export const getmedialist = params => postFormData('/media.py', { cmd: 'getmedialist', ...params })
+export const saveLabelInfo = params => postFormData('/media.py', { cmd: 'saveLabelInfo', ...params })
 
 //program
-export const savePgInfo = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'savePgInfo', ...params })
-export const getPgInfo = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgInfo', ...params })
-export const getPgPreviewInfoFromEdit = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgPreviewInfoFromEdit', ...params })
-export const getPgLstByUdid = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgLstByUdid', ...params })
-export const postScreenshot = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'postScreenshot', ...params })
-export const getPgctInfo = params => postFormData('/psn/psn_mod/pg.py', { cmd: 'getPgctInfo', ...params })
+export const savePgInfo = params => postFormData('/pg.py', { cmd: 'savePgInfo', ...params })
+export const getPgInfo = params => postFormData('/pg.py', { cmd: 'getPgInfo', ...params })
+export const getPgPreviewInfoFromEdit = params => postFormData('/pg.py', { cmd: 'getPgPreviewInfoFromEdit', ...params })
+export const getPgLstByUdid = params => postFormData('/pg.py', { cmd: 'getPgLstByUdid', ...params })
+export const postScreenshot = params => postFormData('/pg.py', { cmd: 'postScreenshot', ...params })
+export const getPgctInfo = params => postFormData('/pg.py', { cmd: 'getPgctInfo', ...params })
 export const updatePgct = data => instance({
   method: "post",
-  url: '/psn/psn_mod/pg.py',
+  url: '/pg.py',
   data
 })
 
 
 //daily
-export const getScList = params => postFormData('/psn/psn_mod/schedule.py', { cmd: 'getScList', ...params })
+export const getScList = params => postFormData('/schedule.py', { cmd: 'getScList', ...params })
 
 //schedule
-export const getNsList = params => postFormData('/psn/psn_mod/schedule.py', { cmd: 'getNsList', ...params })
+export const getNsList = params => postFormData('/schedule.py', { cmd: 'getNsList', ...params })
 
 //device
-export const getdplist = params => postFormData('/psn/psn_mod/dp.py', { cmd: 'getdplist', ...params })
-export const GetAllDp = params => postFormData('/psn/psn_mod/dp.py', { cmd: 'GetAllDp', ...params })
+export const getdplist = params => postFormData('/dp.py', { cmd: 'getdplist', ...params })
+export const GetAllDp = params => postFormData('/dp.py', { cmd: 'GetAllDp', ...params })
 
 //dispatch
-export const dispatchSch = params => postFormData('/psn/psn_mod/dispatch.py', { cmd: 'dispatch_sch', ...params })
+export const dispatchSch = params => postFormData('/dispatch.py', { cmd: 'dispatch_sch', ...params })

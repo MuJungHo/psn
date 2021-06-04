@@ -73,8 +73,8 @@ const useStyles = makeStyles({
 const MediaContent = props => {
   const { medias, activated, setActivated, mutiple } = props
   const classes = useStyles()
-  const mf = process.env.REACT_APP_MEDIA_PATH
-  const psn = process.env.REACT_APP_PSN
+  const mf = process.env.REACT_APP_DOMAIN + '/mf'
+  const psn = process.env.REACT_APP_DOMAIN + '/psn'
   const getMediaPath = media => {
     if (media.mtype === 'image') return `${mf}/_preview/${media.mname.split('.')[0]}.jpg`
     if (media.mtype === 'video') return `${mf}/_preview/${media.mname.split('.')[0]}.jpg`

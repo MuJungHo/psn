@@ -12,7 +12,7 @@ import { Backdrop, CircularProgress } from '@material-ui/core';
 import { v4 as uuid } from 'uuid'
 import PickDialog from '../PickDialog'
 
-const mf = process.env.REACT_APP_MEDIA_PATH
+const mf = process.env.REACT_APP_DOMAIN + '/mf'
 const ProgramContent = props => {
   const { program, setProgram } = props
   return (
@@ -203,8 +203,8 @@ export default ({
 }) => {
   const boardRef = React.useRef()
   const history = useHistory();
-  const mf = process.env.REACT_APP_MEDIA_PATH
-  const psn = process.env.REACT_APP_PSN
+  const mf = process.env.REACT_APP_DOMAIN + '/mf'
+  const psn = process.env.REACT_APP_DOMAIN + '/psn'
   const [activeLayer, setActiveLayer] = React.useState({})
   React.useEffect(() => {
     setActiveLayer({ ...layers.find(layer => layer.ptid === activeLayer.ptid) })
