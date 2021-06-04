@@ -20,6 +20,12 @@ export default ({
   const rights = layers.filter(l => l.ptid !== layer.ptid).map(l => l.left + l.width)
   const layerXs = tops.concat(bottoms)
   const layerYs = lefts.concat(rights)
+  const [layerImage, setLayerImage] = React.useState('')
+  React.useEffect(() => {
+    toDataURL(filePath(), (dataUrl) => {
+      setLayerImage(dataUrl)
+    })
+  }, [])
   React.useEffect(() => {
     if (JSON.stringify(start) !== JSON.stringify({}) && start !== null) {
       board.current.addEventListener('mousemove', drag)
@@ -110,6 +116,19 @@ export default ({
       return layerYs.some(layerY => Math.abs(layerY - layer.left - layer.width) < 10)
     }
   }
+  function toDataURL(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      var reader = new FileReader();
+      reader.onloadend = function () {
+        callback(reader.result);
+      }
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  }
   const filePath = () => {
     if (layer.mtype === 'btn') {
       return layer.btn_bg_mid === '0'
@@ -147,7 +166,7 @@ export default ({
         height={layer.height}
       />
       <image
-        xlinkHref={filePath()}
+        xlinkHref={layerImage}
         x={layer.left}
         y={layer.top}
         width={layer.width}

@@ -99,7 +99,7 @@ const ImageLayerContent = props => {
       mh: "1280",
       mid: media.mid,
       mname: media.mname,
-      mtitle:  media.mtitle,
+      mtitle: media.mtitle,
       mw: "1026",
       odr: "1",
       player: "",
@@ -117,7 +117,7 @@ const ImageLayerContent = props => {
         ? {
           ...layer,
           layerInfos: [
-            ...layer.layerInfos, 
+            ...layer.layerInfos,
             ...newMediaInfos
           ]
         }
@@ -206,6 +206,25 @@ export default ({
   const mf = process.env.REACT_APP_DOMAIN + '/mf'
   const psn = process.env.REACT_APP_DOMAIN + '/psn'
   const [activeLayer, setActiveLayer] = React.useState({})
+  const [bgImage, setBgImage] = React.useState('')
+  React.useEffect(() => {
+    toDataURL(`${mf}/000/00/06/00000062.png`, (dataUrl) => {
+      setBgImage(dataUrl)
+    })
+  }, [])
+  function toDataURL(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      var reader = new FileReader();
+      reader.onloadend = function () {
+        callback(reader.result);
+      }
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  }
   React.useEffect(() => {
     setActiveLayer({ ...layers.find(layer => layer.ptid === activeLayer.ptid) })
   }, [layers])
@@ -227,18 +246,19 @@ export default ({
               activeLayer={activeLayer}
             />
             <svg id="board" xmlns="http://www.w3.org/2000/svg" version="1.1" width={board.width} height={board.height} x={board.left} y={board.top} ref={boardRef} >
-              <rect
-                style={{
-                  fill: '#000',
-                  fillOpacity: '.5'
-                }}
+
+              <image
+                xlinkHref={bgImage}
                 x={board.left}
                 y={board.top}
                 width={board.width}
                 height={board.height}
               />
-              <image
-                xlinkHref={`${mf}/000/00/06/00000062.png`}
+              <rect
+                style={{
+                  fill: '#000',
+                  fillOpacity: '.5'
+                }}
                 x={board.left}
                 y={board.top}
                 width={board.width}

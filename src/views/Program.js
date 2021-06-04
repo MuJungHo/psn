@@ -9,7 +9,7 @@ import { getPgInfo, getPgPreviewInfoFromEdit, savePgInfo, saveLabelInfo, postScr
 import { useHistory } from "react-router-dom"
 import html2canvas from 'html2canvas'
 import { v4 as uuid } from 'uuid'
-
+import canvg from 'canvg'
 export default () => {
   const { pgid } = useParams()
   const history = useHistory();
@@ -223,13 +223,60 @@ export default () => {
       handleCaptureScreen()
     })
   }
-  const handleCaptureScreen = () => {
-    html2canvas(document.getElementById('board')).then(canvas => {
-      var imgBase64 = canvas.toDataURL()
-      postScreenshot({ previewPgid: pgid, previewPgname: 'IU Love Me', imgBase64, flag: 0 }).then(() => {
-        postScreenshot({ previewPgid: pgid, previewPgname: 'IU Love Me', imgBase64, flag: 1 }).then(() => history.push(`/newui/programs`))
+  function svgString2Image(svgString, width, height, format, callback) {
+    // set default for format parameter
+    format = format ? format : 'png';
+    // SVG data URL from SVG string
+    var svgData = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+    // create canvas in memory(not in DOM)
+    var canvas = document.createElement('canvas');
+    // get canvas context for drawing on canvas
+    var context = canvas.getContext('2d');
+    // set canvas size
+    canvas.width = width;
+    canvas.height = height;
+    // create image in memory(not in DOM)
+    var image = new Image();
+    // later when image loads run this
+    image.onload = function () { // async (happens later)
+      // clear canvas
+      context.clearRect(0, 0, width, height);
+      // draw image with SVG data to canvas
+      context.drawImage(image, 0, 0, width, height);
+      // snapshot canvas as png
+      var pngData = canvas.toDataURL('image/' + format);
+      // pass png data URL to callback
+      callback(pngData);
+    }; // end async
+    // start loading SVG data into in memory image
+    image.src = svgData;
+  }
+
+  const handleCaptureScreen = async () => {
+    const svgElement = document.getElementById('board')
+    const svgString = new XMLSerializer().serializeToString(svgElement)
+    const svg64 = btoa(unescape(encodeURIComponent(svgString)))
+    const svgBase64 = `data:image/svg+xml;base64,${svg64}`
+
+    const canvas = document.createElement('canvas')
+    canvas.width = svgElement.clientWidth
+    canvas.height = svgElement.clientHeight
+    const ctx = canvas.getContext('2d')
+    const image = new Image()
+    image.onload = function () { // async (happens later)
+      // clear canvas
+      ctx.clearRect(0, 0, svgElement.clientWidth, svgElement.clientHeight);
+      // draw image with SVG data to canvas
+      ctx.drawImage(image, 0, 0, svgElement.clientWidth, svgElement.clientHeight);
+      // snapshot canvas as png
+      var imgBase64 = canvas.toDataURL('image/png');
+      // pass png data URL to callback
+
+      postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 0 }).then(() => {
+        postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 1 }).then(() => history.push(`/newui/programs`))
       })
-    })
+    };
+    image.src = svgBase64;
   }
 
   return (
