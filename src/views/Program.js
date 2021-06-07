@@ -198,7 +198,7 @@ export default () => {
       shuffle,
       tbl_argv: '',
     }
-
+    // console.log(layers)
     layers.forEach(async (layer, i) => {
       const formData = new FormData()
       layer.layerInfos.forEach((info, index) => {
@@ -246,7 +246,7 @@ export default () => {
       // pass png data URL to callback
 
       postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 0 }).then(() => {
-        postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 1 }).then(() => history.push(`/newui/programs`))
+        postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 1 }).then(() => {})
       })
     };
     image.src = svgBase64;

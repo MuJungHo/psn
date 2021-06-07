@@ -72,6 +72,7 @@ const useStyles = makeStyles({
 })
 const MediaContent = props => {
   const { medias, activated, setActivated, mutiple } = props
+  // console.log(medias)
   const classes = useStyles()
   const mf = process.env.REACT_APP_DOMAIN + '/mf'
   const psn = process.env.REACT_APP_DOMAIN + '/psn'
@@ -134,7 +135,6 @@ const MediaContent = props => {
 }
 export default props => {
   const {
-    target,
     mtype,
     titleText,
     isDialogOpen,
@@ -146,25 +146,24 @@ export default props => {
     cancelText,
     mutiple
   } = props
+  // console.log(mtype)
   const [targets, setTargets] = React.useState([])
   const [activated, setActivated] = React.useState([])
   React.useEffect(() => {
     if (isDialogOpen) {
-      if (target === 'media') {
-        getmedialist({ udid: 1, foid: 0, mtype })
-          .then((response) => {
-            convert.parseString(response.data, { explicitArray: false }, (err, result) => {
-              if (!err) {
-                if (result.root.media_info === undefined) return setTargets([])
-                if (Object.keys(result.root.media_info)[0] === '0') {
-                  setTargets([...result.root.media_info.map(media => ({ ...media, uuid: uuid() }))])
-                } else {
-                  setTargets([{ ...result.root.media_info, uuid: uuid() }])
-                }
+      getmedialist({ udid: 1, foid: 0, mtype })
+        .then((response) => {
+          convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+            if (!err) {
+              if (result.root.media_info === undefined) return setTargets([])
+              if (Object.keys(result.root.media_info)[0] === '0') {
+                setTargets([...result.root.media_info.map(media => ({ ...media, uuid: uuid() }))])
+              } else {
+                setTargets([{ ...result.root.media_info, uuid: uuid() }])
               }
-            })
+            }
           })
-      }
+        })
     }
   }, [isDialogOpen])
 
@@ -195,8 +194,9 @@ export default props => {
       <DialogContent style={{ display: 'flex', alignItems: 'flex-start', height: 700 }}>
         {
           {
-            'media': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />
-          }[target]
+            'video': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />,
+            'image': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />
+          }[mtype]
         }
       </DialogContent>
       <DialogActions>

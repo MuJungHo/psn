@@ -61,7 +61,7 @@ const LayerTypePicker = props => {
   const doAddLayer = mtype => {
 
     var ptids = layers.map(layer => Number(layer.ptid))
-    var newPtid = Math.max(...ptids) + 1
+    var newPtid = String(Math.max(...ptids) + 1)
     var newLayer = {
       ptid: newPtid,
       width: Math.round(100 * zoom),
@@ -69,6 +69,8 @@ const LayerTypePicker = props => {
       left: 0,
       top: 0,
       mtype,
+      argv: '0',
+      file: '',
       layerInfos: []
     }
     setLayers([
@@ -123,7 +125,7 @@ export default ({
   }
   const handleDuplicateLayer = () => {
     var ptids = layers.map(layer => Number(layer.ptid))
-    var newPtid = Math.max(...ptids) + 1
+    var newPtid = String(Math.max(...ptids) + 1)
     var newLayer = { ...activeLayer, ptid: newPtid }
     setLayers([
       ...layers,

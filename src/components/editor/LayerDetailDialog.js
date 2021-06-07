@@ -92,6 +92,9 @@ export default props => {
   const [isPickDialogOpen, setPickDialogOpen] = React.useState(false)
   const [layerDetail, setLayerDetail] = React.useState({ ...activeLayer })
   React.useEffect(() => {
+    setLayerDetail({ ...activeLayer })
+  }, [activeLayer])
+  React.useEffect(() => {
     if (isDialogOpen) {
       if (target === 'media') {
       }
@@ -114,11 +117,16 @@ export default props => {
     setPickDialogOpen(true)
   }
   const doAddLayerInfo = layerInfos => {
+    var updatedLayerInfos = [
+      ...layerDetail.layerInfos,
+      ...layerInfos
+    ]
+
     setLayerDetail({
       ...layerDetail,
+      file: updatedLayerInfos.length > 0 ? updatedLayerInfos[0].mname : '',
       layerInfos: [
-        ...layerDetail.layerInfos,
-        ...layerInfos
+        ...updatedLayerInfos
       ]
     })
   }
@@ -127,6 +135,7 @@ export default props => {
 
     setLayerDetail({
       ...layerDetail,
+      file: updatedLayerInfos.length > 0 ? updatedLayerInfos[0].mname : '',
       layerInfos: [
         ...updatedLayerInfos
       ]
@@ -183,8 +192,7 @@ export default props => {
         isDialogOpen={isPickDialogOpen}
         setDialogOpen={setPickDialogOpen}
         titleText={'pick media'}
-        target="media"
-        mtype="image"
+        mtype={activeLayer.mtype}
         mutiple
         confirmText={'確認'}
         confirm={doAddLayerInfo}

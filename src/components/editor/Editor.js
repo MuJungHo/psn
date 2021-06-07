@@ -62,7 +62,7 @@ export default ({
     setContent(
       JSON.stringify(activeLayer) === '{}'
         ? <ProgramContent program={program} setProgram={setProgram} />
-        : <ActiveLayerContent activeLayer={activeLayer} layers={layers} setLayers={setLayers} program={program} />)
+        : <ActiveLayerContent setActiveLayer={setActiveLayer} activeLayer={activeLayer} layers={layers} setLayers={setLayers} program={program} />)
   }, [activeLayer])
 
   function toDataURL(url, callback) {
