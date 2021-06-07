@@ -13,7 +13,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import Add from '@material-ui/icons/Add'
 import Delete from '@material-ui/icons/Delete'
-
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 const useStyles = makeStyles({
   root: {
     width: '100%',
@@ -45,8 +45,8 @@ const useStyles = makeStyles({
     flex: 1
   }
 })
-const LayerPicker = props => {
-  const { classes, layers, setLayers, zoom } = props
+const LayerTypePicker = props => {
+  const { classes, layers, setLayers, zoom, setActiveLayer } = props
   const layerTypes = [
     { image: 'pix', mtype: 'image' },
     { image: 'film', mtype: 'video' },
@@ -62,18 +62,20 @@ const LayerPicker = props => {
 
     var ptids = layers.map(layer => Number(layer.ptid))
     var newPtid = Math.max(...ptids) + 1
+    var newLayer = {
+      ptid: newPtid,
+      width: Math.round(100 * zoom),
+      height: Math.round(100 * zoom),
+      left: 0,
+      top: 0,
+      mtype,
+      layerInfos: []
+    }
     setLayers([
       ...layers,
-      {
-        ptid: newPtid,
-        width: 100 * zoom,
-        height: 100 * zoom,
-        left: 0,
-        top: 0,
-        mtype,
-        layerInfos: []
-      }
+      { ...newLayer }
     ])
+    setActiveLayer({ ...newLayer })
   }
   return (
     <div className={classes.root}>
@@ -103,13 +105,15 @@ export default ({
   setLayers,
   layers,
   activeLayer,
-  setContent
+  setContent,
+  setActiveLayer
 }) => {
   const history = useHistory();
   const classes = useStyles()
   const { status } = useSelector(state => state.drawer)
+  const disabled = JSON.stringify(activeLayer) === '{}'
   const handleAddLayer = () => {
-    setContent(<LayerPicker classes={classes} layers={layers} setLayers={setLayers} zoom={zoom} />)
+    setContent(<LayerTypePicker classes={classes} layers={layers} setLayers={setLayers} zoom={zoom} setActiveLayer={setActiveLayer} />)
   }
   const handleDeleteLayer = () => {
     var tempLayers = layers.filter(layer => layer.ptid !== activeLayer.ptid)
@@ -117,13 +121,30 @@ export default ({
       ...tempLayers
     ])
   }
+  const handleDuplicateLayer = () => {
+    var ptids = layers.map(layer => Number(layer.ptid))
+    var newPtid = Math.max(...ptids) + 1
+    var newLayer = { ...activeLayer, ptid: newPtid }
+    setLayers([
+      ...layers,
+      { ...newLayer }
+    ])
+    setActiveLayer({ ...newLayer })
+  }
   return (
-    <div style={{ height: 60, backgroundColor: '#FFF', ...style }}>
-      <ActionButton onClick={handleAddLayer} >
+    <div style={{ height: 60, backgroundColor: '#FFF', display: 'flex', alignItems: 'center', ...style }}>
+      <Button
+        onClick={handleAddLayer}
+        variant="contained"
+        color="primary">
         <Add />
-      </ActionButton>
-      <ActionButton onClick={handleDeleteLayer} >
+        {'新增區塊'}
+      </Button>
+      <ActionButton onClick={handleDeleteLayer} disabled={disabled} style={{ fill: disabled ? '#bebebe' : '#5295FF' }}>
         <Delete />
+      </ActionButton>
+      <ActionButton onClick={handleDuplicateLayer} disabled={disabled} style={{ fill: disabled ? '#bebebe' : '#5295FF' }}>
+        <FileCopyIcon />
       </ActionButton>
     </div>
   )

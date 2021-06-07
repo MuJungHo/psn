@@ -41,10 +41,10 @@ export default () => {
             var tempLayouts = result.root.pginfo.layout === '' ? [] : result.root.pginfo.layout.split('|')
             var tempTypes = result.root.pginfo.mtype === '' ? [] : result.root.pginfo.mtype.split('|')
             var tempLayers = tempLayouts.map((layout, index) => ({
-              left: layout.split(',')[0] * tempZoom,
-              top: layout.split(',')[1] * tempZoom,
-              width: layout.split(',')[2] * tempZoom,
-              height: layout.split(',')[3] * tempZoom,
+              left: Math.round(layout.split(',')[0] * tempZoom),
+              top: Math.round(layout.split(',')[1] * tempZoom),
+              width: Math.round(layout.split(',')[2] * tempZoom),
+              height: Math.round(layout.split(',')[3] * tempZoom),
               mtype: tempTypes[index],
               ptid: (index + 1).toString()
             }))
@@ -52,10 +52,10 @@ export default () => {
             setProgram({ ...result.root.pginfo })
             setMonitors(result.root.pginfo.moniarea.split('|'))
             setBoard({
-              width: result.root.pginfo.w * tempZoom,
-              height: result.root.pginfo.h * tempZoom,
-              left: result.root.pginfo.x * tempZoom,
-              top: result.root.pginfo.y * tempZoom,
+              width: Math.round(result.root.pginfo.w * tempZoom),
+              height: Math.round(result.root.pginfo.h * tempZoom),
+              left: Math.round(result.root.pginfo.x * tempZoom),
+              top: Math.round(result.root.pginfo.y * tempZoom),
             })
             setTempPgid(preview_pgid_tmp)
             setTempFolderId(result.root.pginfo.tempFolderId)

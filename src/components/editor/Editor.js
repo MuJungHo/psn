@@ -5,7 +5,7 @@ import ActionBar from './ActionBar'
 import { useHistory } from "react-router-dom"
 import { Backdrop, CircularProgress } from '@material-ui/core';
 import TextField from '../material/TextField'
-import ImageLayerContent from './contents/ImageLayerContent'
+import ActiveLayerContent from './contents/ActiveLayerContent'
 const mf = process.env.REACT_APP_DOMAIN + '/mf'
 const ProgramContent = props => {
   const { program, setProgram } = props
@@ -30,46 +30,6 @@ const ProgramContent = props => {
         })}
       />
     </div>
-  )
-}
-const ButtonLayerContent = props => {
-  const { activeLayer, layers, setLayers, program } = props
-  const btnMediaPath = activeLayer.btn_bg_mid === '0'
-    ? `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${activeLayer.ptid}_0.png`
-    : `${mf}/_preview/${activeLayer.btn_bg_mname.split('.')[0]}.jpg`
-  const btnActivedMediaPath = activeLayer.btn_bg_mid === '0'
-    ? `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${activeLayer.ptid}_1.png`
-    : `${mf}/_preview/${activeLayer.btn_bg_mname.split('.')[0]}.jpg`
-  return (
-    <>
-      {
-        activeLayer.layerInfos.map(layerInfo =>
-          <div key={layerInfo.uuid}>
-            <img src={btnMediaPath} style={{ height: 30 }} />
-            <img src={btnActivedMediaPath} style={{ height: 30 }} />
-            {/* <TextField
-            key={layerInfo.uuid}
-            type="text"
-            variant="outlined"
-            value={layerInfo.t || ''}
-            onChange={e => handleUpdateLayer(e, layerInfo.uuid)}
-          /> */}
-          </div>)
-      }
-    </>
-  )
-}
-const ActiveLayerContent = props => {
-  const { activeLayer, layers, setLayers, program } = props
-  return (
-    <>
-      {
-        {
-          'image': <ImageLayerContent activeLayer={activeLayer} layers={layers} setLayers={setLayers} />,
-          'btn': <ButtonLayerContent activeLayer={activeLayer} layers={layers} setLayers={setLayers} program={program} />
-        }[activeLayer.mtype]
-      }
-    </>
   )
 }
 export default ({
@@ -138,6 +98,7 @@ export default ({
               setLayers={setLayers}
               activeLayer={activeLayer}
               setContent={setContent}
+              setActiveLayer={setActiveLayer}
             />
             <svg id="board" xmlns="http://www.w3.org/2000/svg" version="1.1" width={board.width} height={board.height} x={board.left} y={board.top} ref={boardRef} >
 

@@ -21,6 +21,7 @@ export default ({
   const layerXs = tops.concat(bottoms)
   const layerYs = lefts.concat(rights)
   const [layerImage, setLayerImage] = React.useState('')
+
   React.useEffect(() => {
     if (activeLayer.file) {
       toDataURL(filePath(), (dataUrl) => {
@@ -83,10 +84,10 @@ export default ({
     board.current.removeEventListener('mousemove', drag)
   }
   const drag = e => {
-    var newLeft = layer.left + e.x - start.left
-    var newTop = layer.top + e.y - start.top
-    var newRight = layer.left + e.x - start.left + layer.width
-    var newBottom = layer.top + e.y - start.top + layer.height
+    var newLeft = Math.round(layer.left + e.x - start.left)
+    var newTop = Math.round(layer.top + e.y - start.top)
+    var newRight = Math.round(layer.left + e.x - start.left + layer.width)
+    var newBottom = Math.round(layer.top + e.y - start.top + layer.height)
     if (newLeft < 0) newLeft = 0
     if (newTop < 0) newTop = 0
     if (newRight > workSpace.width) newLeft = workSpace.width - layer.width
@@ -147,7 +148,7 @@ export default ({
     } else {
       return `${psn}/images/module/ico-${{
         'image': 'pix',
-        'video': 'file',
+        'video': 'film',
         'stream': 'stream',
         'url': 'ie',
         'time': 'clock',
