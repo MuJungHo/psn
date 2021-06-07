@@ -138,6 +138,7 @@ export default () => {
         })
       })
   }, [])
+  
   const handleSaveProgram = async () => {
     var mtype = layers.map(layer => layer.mtype).join('|')
     var layout = layers.map(layer => `${layer.left / zoom},${layer.top / zoom},${layer.width / zoom},${layer.height / zoom}`).join('|')
@@ -223,35 +224,7 @@ export default () => {
       handleCaptureScreen()
     })
   }
-  function svgString2Image(svgString, width, height, format, callback) {
-    // set default for format parameter
-    format = format ? format : 'png';
-    // SVG data URL from SVG string
-    var svgData = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
-    // create canvas in memory(not in DOM)
-    var canvas = document.createElement('canvas');
-    // get canvas context for drawing on canvas
-    var context = canvas.getContext('2d');
-    // set canvas size
-    canvas.width = width;
-    canvas.height = height;
-    // create image in memory(not in DOM)
-    var image = new Image();
-    // later when image loads run this
-    image.onload = function () { // async (happens later)
-      // clear canvas
-      context.clearRect(0, 0, width, height);
-      // draw image with SVG data to canvas
-      context.drawImage(image, 0, 0, width, height);
-      // snapshot canvas as png
-      var pngData = canvas.toDataURL('image/' + format);
-      // pass png data URL to callback
-      callback(pngData);
-    }; // end async
-    // start loading SVG data into in memory image
-    image.src = svgData;
-  }
-
+  
   const handleCaptureScreen = async () => {
     const svgElement = document.getElementById('board')
     const svgString = new XMLSerializer().serializeToString(svgElement)

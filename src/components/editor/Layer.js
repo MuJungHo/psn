@@ -22,6 +22,14 @@ export default ({
   const layerYs = lefts.concat(rights)
   const [layerImage, setLayerImage] = React.useState('')
   React.useEffect(() => {
+    if (activeLayer.file) {
+      toDataURL(filePath(), (dataUrl) => {
+        setLayerImage(dataUrl)
+      })
+    }
+  }, [activeLayer.file])
+  React.useEffect(() => {
+    console.log(11)
     toDataURL(filePath(), (dataUrl) => {
       setLayerImage(dataUrl)
     })
