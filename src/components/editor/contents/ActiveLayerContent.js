@@ -1,6 +1,7 @@
 import React from 'react'
 import { v4 as uuid } from 'uuid'
 import PickDialog from '../../PickDialog'
+import LayerDetailDialog from '../../editor/LayerDetailDialog'
 import ActionButton from '../../material/ActionButton'
 import TextField from '../../material/TextField'
 import Add from '@material-ui/icons/Add'
@@ -9,26 +10,7 @@ import Delete from '@material-ui/icons/Delete'
 import ImageLayerContent from './ImageLayerContent'
 
 const mf = process.env.REACT_APP_DOMAIN + '/mf'
-// const ButtonLayerContent = props => {
-//   const { activeLayer, layers, setLayers, program } = props
-//   const btnMediaPath = activeLayer.btn_bg_mid === '0'
-//     ? `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${activeLayer.ptid}_0.png`
-//     : `${mf}/_preview/${activeLayer.btn_bg_mname.split('.')[0]}.jpg`
-//   const btnActivedMediaPath = activeLayer.btn_bg_mid === '0'
-//     ? `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${activeLayer.ptid}_1.png`
-//     : `${mf}/_preview/${activeLayer.btn_bg_mname.split('.')[0]}.jpg`
-//   return (
-//     <>
-//       {
-//         activeLayer.layerInfos.map(layerInfo =>
-//           <div key={layerInfo.uuid}>
-//             <img src={btnMediaPath} style={{ height: 30 }} />
-//             <img src={btnActivedMediaPath} style={{ height: 30 }} />
-//           </div>)
-//       }
-//     </>
-//   )
-// }
+
 export default props => {
   const { activeLayer, layers, setLayers, program } = props
   const [isDialogOpen, setDialogOpen] = React.useState(false)
@@ -89,24 +71,29 @@ export default props => {
     })
     setLayers([...updatedLayers])
   }
+  const handleUpdateLayerInfo = updatedLayer => {
+    var updatedLayers = layers.map(layer => {
+      return layer.ptid === updatedLayer.ptid
+        ? { ...updatedLayer }
+        : { ...layer }
+    })
+    setLayers([...updatedLayers])
+  }
   return (
     <>
       <ActionButton onClick={handleAddLayerInfo} >
         <Edit />
       </ActionButton>
-      <input type="text" value={activeLayer.top} />
-      <input type="text" value={activeLayer.left} />
-      <input type="text" value={activeLayer.width} />
-      <input type="text" value={activeLayer.height} />
-      <PickDialog
+      <input type="text" value={activeLayer.top} onChange={() => { }} />
+      <input type="text" value={activeLayer.left} onChange={() => { }} />
+      <input type="text" value={activeLayer.width} onChange={() => { }} />
+      <input type="text" value={activeLayer.height} onChange={() => { }} />
+      <LayerDetailDialog
         isDialogOpen={isDialogOpen}
         setDialogOpen={setDialogOpen}
-        titleText={'pick media'}
-        target="media"
-        mtype="image"
-        mutiple
         confirmText={'確認'}
-        confirm={doAddLayerInfo}
+        activeLayer={activeLayer}
+        confirm={handleUpdateLayerInfo}
       />
 
       {
