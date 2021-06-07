@@ -6,7 +6,9 @@ import { useHistory } from "react-router-dom"
 import { Backdrop, CircularProgress } from '@material-ui/core';
 import TextField from '../material/TextField'
 import ActiveLayerContent from './contents/ActiveLayerContent'
-const mf = process.env.REACT_APP_DOMAIN + '/mf'
+const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+const psn = baseURL + '/psn'
+const mf = baseURL + '/mf'
 const ProgramContent = props => {
   const { program, setProgram } = props
   return (
@@ -47,8 +49,6 @@ export default ({
 }) => {
   const boardRef = React.useRef()
   const history = useHistory();
-  const mf = process.env.REACT_APP_DOMAIN + '/mf'
-  const psn = process.env.REACT_APP_DOMAIN + '/psn'
   const [activeLayer, setActiveLayer] = React.useState({})
   const [bgImage, setBgImage] = React.useState('')
   const [content, setContent] = React.useState()

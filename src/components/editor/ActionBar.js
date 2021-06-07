@@ -14,6 +14,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import Add from '@material-ui/icons/Add'
 import Delete from '@material-ui/icons/Delete'
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+
+const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+const psn = baseURL + '/psn'
+
 const useStyles = makeStyles({
   root: {
     width: '100%',
@@ -57,7 +61,6 @@ const LayerTypePicker = props => {
     { image: 'ppt', mtype: 'ppt' },
     { image: 'youtube', mtype: 'youtube' }
   ]
-  const psn = process.env.REACT_APP_DOMAIN + '/psn'
   const doAddLayer = mtype => {
 
     var ptids = layers.map(layer => Number(layer.ptid))

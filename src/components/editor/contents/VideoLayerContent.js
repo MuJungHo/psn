@@ -1,5 +1,7 @@
 import React from 'react'
-const mf = process.env.REACT_APP_DOMAIN + '/mf'
+const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+const psn = baseURL + '/psn'
+const mf = baseURL + '/mf'
 
 export default props => {
     const { activeLayer, layers, setLayers } = props

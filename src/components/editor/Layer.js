@@ -11,8 +11,9 @@ export default ({
   setActiveLayer,
   workSpace
 }) => {
-  const mf = process.env.REACT_APP_DOMAIN + '/mf'
-  const psn = process.env.REACT_APP_DOMAIN + '/psn'
+  const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+  const psn = baseURL + '/psn'
+  const mf = baseURL + '/mf'
   const [start, setStart] = React.useState(null)
   const tops = layers.filter(l => l.ptid !== layer.ptid).map(l => l.top)
   const bottoms = layers.filter(l => l.ptid !== layer.ptid).map(l => l.top + l.height)

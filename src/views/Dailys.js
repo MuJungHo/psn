@@ -66,8 +66,9 @@ export default () => {
   const history = useHistory();
   const [dailys, setDailys] = React.useState([])
   const { status } = useSelector(state => state.drawer)
-  const mf = process.env.REACT_APP_DOMAIN + '/mf'
-  const psn = process.env.REACT_APP_DOMAIN + '/psn'
+  const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+  const psn = baseURL + '/psn'
+  const mf = baseURL + '/mf'
   React.useEffect(() => {
     getScList({ sel_udid: 1, sortType: 0 })
       .then((response) => {

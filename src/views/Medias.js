@@ -66,8 +66,9 @@ export default () => {
   const history = useHistory();
   const [medias, setMedias] = React.useState([])
   const { status } = useSelector(state => state.drawer)
-  const mf = process.env.REACT_APP_DOMAIN + '/mf'
-  const psn = process.env.REACT_APP_DOMAIN + '/psn'
+  const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+  const psn = baseURL + '/psn'
+  const mf = baseURL + '/mf'
   React.useEffect(() => {
     getmedialist({ udid: 1, foid: 0, mtype: '' })
       .then((response) => {
