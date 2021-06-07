@@ -91,11 +91,20 @@ export default ({
   const psn = process.env.REACT_APP_DOMAIN + '/psn'
   const [activeLayer, setActiveLayer] = React.useState({})
   const [bgImage, setBgImage] = React.useState('')
+  const [content, setContent] = React.useState()
   React.useEffect(() => {
     toDataURL(`${mf}/000/00/06/00000062.png`, (dataUrl) => {
       setBgImage(dataUrl)
     })
   }, [])
+
+  React.useEffect(() => {
+    setContent(
+      JSON.stringify(activeLayer) === '{}'
+        ? <ProgramContent program={program} setProgram={setProgram} />
+        : <ActiveLayerContent activeLayer={activeLayer} layers={layers} setLayers={setLayers} program={program} />)
+  }, [activeLayer])
+
   function toDataURL(url, callback) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
@@ -128,6 +137,7 @@ export default ({
               layers={layers}
               setLayers={setLayers}
               activeLayer={activeLayer}
+              setContent={setContent}
             />
             <svg id="board" xmlns="http://www.w3.org/2000/svg" version="1.1" width={board.width} height={board.height} x={board.left} y={board.top} ref={boardRef} >
 
@@ -175,11 +185,7 @@ export default ({
               setProgram={setProgram}
               activeLayer={activeLayer}
               setActiveLayer={setActiveLayer}
-              content={
-                JSON.stringify(activeLayer) === '{}'
-                  ? <ProgramContent program={program} setProgram={setProgram} />
-                  : <ActiveLayerContent activeLayer={activeLayer} layers={layers} setLayers={setLayers} program={program} />
-              }
+              content={content}
             />
           </>
       }

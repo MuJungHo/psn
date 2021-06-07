@@ -29,7 +29,6 @@ export default ({
     }
   }, [activeLayer.file])
   React.useEffect(() => {
-    console.log(11)
     toDataURL(filePath(), (dataUrl) => {
       setLayerImage(dataUrl)
     })
@@ -146,7 +145,16 @@ export default ({
     if (layer.file) {
       return `${mf}/_preview/${layer.file.split('.')[0]}.jpg`
     } else {
-      return `${psn}/images/module/ico-${layer.mtype}.svg`
+      return `${psn}/images/module/ico-${{
+        'image': 'pix',
+        'video': 'file',
+        'stream': 'stream',
+        'url': 'ie',
+        'time': 'clock',
+        'pdf': 'pdf',
+        'ppt': 'ppt',
+        'youtube': 'youtube'
+      }[layer.mtype]}.svg`
     }
   }
   const focus = () => {
