@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom"
 import html2canvas from 'html2canvas'
 import { v4 as uuid } from 'uuid'
 import canvg from 'canvg'
+import { getCookie } from '../utils/libs'
 export default () => {
   const { pgid } = useParams()
   const history = useHistory();
@@ -22,6 +23,7 @@ export default () => {
   const [tempFolderId, setTempFolderId] = React.useState()
   const [targetFolder, setTargetFolderId] = React.useState()
   const { status } = useSelector(state => state.drawer)
+  const { sel_udid } = useSelector(state => state.user)
   const space = {
     width: window.innerWidth - 260 - 300 - 150,
     height: window.innerHeight - 80 - 200,
@@ -29,7 +31,7 @@ export default () => {
     left: 0
   }
   const [board, setBoard] = React.useState({})
-  const uid = localStorage.getItem('login_uid') || 1
+  const uid = getCookie('login_uid') || 1
   React.useEffect(() => {
     getPgInfo({ pgid, uid })
       .then(response => {
@@ -159,8 +161,8 @@ export default () => {
     var moniarea = monitors.join('|')
     var params = {
       pgid: pgid,
-      uid: 1,
-      select_udid: 1,
+      uid,
+      select_udid: sel_udid,
       pgid_tmp,
       pgname: program.pgname,
       bgcolor: '#FF000000',

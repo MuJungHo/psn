@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
 }))
-export default ({ items, open, btnText }) => {
+export default ({ items, open, btnText, btnIcon }) => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const handleClick = (event) => {
@@ -48,7 +48,10 @@ export default ({ items, open, btnText }) => {
             variant="contained"
             color="primary"
             onClick={handleClick}
-          >{btnText}</Button>
+          >
+            {btnIcon}
+            {btnText}
+          </Button>
           :
           <IconButton
             onClick={handleClick}
@@ -80,7 +83,7 @@ export default ({ items, open, btnText }) => {
               className={classes.item}
             >
               {item.icon ? item.icon : null}
-              <Typography color="textSecondary" variant="caption">{item.name}</Typography>
+              {item.name}
             </MenuItem>
           )
         }

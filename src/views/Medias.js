@@ -7,18 +7,26 @@ import { getmedialist } from '../utils/apis'
 import { useSelector } from 'react-redux'
 import { useHistory } from "react-router-dom"
 import Actions from '../components/Actions'
+import Add from '@material-ui/icons/Add'
 import {
   CardContent,
   CardMedia,
   CircularProgress,
+  MenuItem,
+  Divider,
 } from '@material-ui/core'
 
+import Select from '../components/material/Select'
+import InputGray from '../components/material/InputGray'
+import Arrow from "../icons/Arrow"
+import DescriptionIcon from '@material-ui/icons/Description';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import CodeIcon from '@material-ui/icons/Code';
 const useStyles = makeStyles({
   root: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'column',
-    paddingLeft: 20,
+    flexDirection: 'column'
   },
   action: {
     marginTop: 0,
@@ -37,13 +45,15 @@ const useStyles = makeStyles({
   container: {
     display: 'flex',
     paddingTop: '1.5rem',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    paddingLeft: 20
   },
   card: {
-    marginRight: '1.5%',
+    marginRight: 20,
     marginBottom: 20,
     height: 'auto',
     cursor: 'pointer',
+    width: 'calc((100% - 120px) / 6)',
     '&:hover': {
       boxShadow: '0 3px 8px 0 rgba(141, 152, 170, .7)',
     },
@@ -61,29 +71,39 @@ const useStyles = makeStyles({
     flex: 1
   }
 })
+const mediaTypes = [
+  { value: 'image', name: '圖片' },
+  { value: 'video', name: '影片' },
+]
 export default () => {
   const classes = useStyles()
   const history = useHistory();
   const [medias, setMedias] = React.useState([])
+  const [filters, setFilters] = React.useState({
+    mtype: ''
+  })
   const { status } = useSelector(state => state.drawer)
+  const { sel_udid } = useSelector(state => state.user)
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
   const psn = baseURL + '/psn'
   const mf = baseURL + '/mf'
   React.useEffect(() => {
-    getmedialist({ udid: 1, foid: 0, mtype: '' })
-      .then((response) => {
-        convert.parseString(response.data, { explicitArray: false }, (err, result) => {
-          if (!err) {
-            if (result.root.media_info === undefined) return setMedias([])
-            if (Object.keys(result.root.media_info)[0] === '0') {
-              setMedias([...result.root.media_info])
-            } else {
-              setMedias([{ ...result.root.media_info }])
+    if (sel_udid) {
+      getmedialist({ udid: sel_udid, foid: 0, ...filters })
+        .then((response) => {
+          convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+            if (!err) {
+              if (result.root.media_info === undefined) return setMedias([])
+              if (Object.keys(result.root.media_info)[0] === '0') {
+                setMedias([...result.root.media_info])
+              } else {
+                setMedias([{ ...result.root.media_info }])
+              }
             }
-          }
+          })
         })
-      })
-  }, [])
+    }
+  }, [sel_udid, filters])
   const getMediaPath = media => {
     if (media.mtype === 'image') return `${mf}/_preview/${media.mname.split('.')[0]}.jpg?t=${moment().unix()}`
     if (media.mtype === 'video') return `${mf}/_preview/${media.mname.split('.')[0]}.jpg?t=${moment().unix()}`
@@ -93,15 +113,36 @@ export default () => {
   }
   return (
     <div className={classes.root}>
+      <Card >
+        <CardContent style={{ padding: 20, display: 'flex' }}>
+          <Select
+            input={<InputGray />}
+            IconComponent={Arrow}
+            value={filters.mtype}
+            onChange={e => setFilters({ ...filters, mtype: e.target.value })}
+            displayEmpty
+          >
+            <MenuItem value={''} >{'全部媒體種類'}</MenuItem>
+            {
+              mediaTypes.map(mtype => <MenuItem value={mtype.value} key={mtype.value}>{mtype.name}</MenuItem>)
+            }
+          </Select>
+          <div className={classes.spacer} />
+          <Actions items={[
+            { name: '上傳檔案', onClick: () => { } },
+            { name: '布告欄', onClick: () => { } },
+            { name: '跑馬燈', onClick: () => { } },
+            { name: 'HTML', onClick: () => { } },
+          ]} btnText={'新增媒體'} btnIcon={<Add />} />
+        </CardContent>
+      </Card>
+      <Divider />
       <div className={classes.container}>
         {
           medias && medias.map((media, key) =>
             <Card
               key={key}
               className={classes.card}
-              style={{
-                width: status ? '15.1%': '12.7%'
-              }}
             >
               <div style={{
                 padding: '0 10px 0 20px',
@@ -111,7 +152,8 @@ export default () => {
               }}>
                 {media.mtitle}
                 <div style={{ flex: 1 }} />
-                <Actions items={[]} />
+                <Actions items={[
+                ]} />
               </div>
               <CardMedia
                 className={classes.media}

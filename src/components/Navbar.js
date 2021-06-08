@@ -40,6 +40,8 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     height: 80,
     boxShadow: 'none',
+    borderBottom: '1px solid #e3e9f4',
+    boxSizing: 'content-box'
   },
 }))
 export default () => {

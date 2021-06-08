@@ -7,17 +7,23 @@ import { getPgLstByUdid } from '../utils/apis'
 import { useSelector } from 'react-redux'
 import { useHistory } from "react-router-dom"
 import Actions from '../components/Actions'
+import Add from '@material-ui/icons/Add'
 import {
   CardContent,
   CardMedia,
   CircularProgress,
+  MenuItem,
+  Divider,
 } from '@material-ui/core'
+
+import Select from '../components/material/Select'
+import InputGray from '../components/material/InputGray'
+import Arrow from "../icons/Arrow"
 const useStyles = makeStyles({
   root: {
     width: '100%',
     display: 'flex',
-    flexDirection: 'column',
-    paddingLeft: 20,
+    flexDirection: 'column'
   },
   action: {
     marginTop: 0,
@@ -36,13 +42,15 @@ const useStyles = makeStyles({
   container: {
     display: 'flex',
     paddingTop: '1.5rem',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    paddingLeft: 20
   },
   card: {
-    marginRight: '1.5%',
+    marginRight: 20,
     marginBottom: 20,
     height: 'auto',
     cursor: 'pointer',
+    width: 'calc((100% - 120px) / 6)',
     '&:hover': {
       boxShadow: '0 3px 8px 0 rgba(141, 152, 170, .7)',
     },
@@ -61,10 +69,17 @@ const useStyles = makeStyles({
   }
 })
 
+const programTypes = [
+  { value: 'windows', name: 'Windows' },
+  { value: 'android', name: 'Android' },
+]
 export default () => {
   const classes = useStyles()
   const history = useHistory();
   const [programs, setPrograms] = React.useState([])
+  const [filters, setFilters] = React.useState({
+    ios: ''
+  })
   const { status } = useSelector(state => state.drawer)
   const { sel_udid } = useSelector(state => state.user)
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
@@ -88,6 +103,27 @@ export default () => {
   }, [sel_udid])
   return (
     <div className={classes.root}>
+      <Card >
+        <CardContent style={{ padding: 20, display: 'flex' }}>
+          <Select
+            input={<InputGray />}
+            IconComponent={Arrow}
+            value={filters.ios}
+            onChange={e => setFilters({ ...filters, ios: e.target.value })}
+            displayEmpty
+          >
+            <MenuItem value={''} >{'全部節目種類'}</MenuItem>
+            {
+              programTypes.map(pgType => <MenuItem value={pgType.value} key={pgType.value}>{pgType.name}</MenuItem>)
+            }
+          </Select>
+          <div className={classes.spacer} />
+          <Actions items={[
+            { name: 'Windows', onClick: () => { } },
+            { name: 'Android', onClick: () => { } },
+          ]} btnText={'新增節目'} btnIcon={<Add />} />
+        </CardContent>
+      </Card>
       <div className={classes.container}>
         {
           programs && programs.map((program, key) =>
