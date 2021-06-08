@@ -66,7 +66,7 @@ export default ({
   React.useEffect(() => {
     setFill(`#${program.bgcolor.substring(3)}`)
   }, [program.bgcolor])
-  
+
   React.useEffect(() => {
     setContent(
       JSON.stringify(activeLayer) === '{}'
@@ -110,18 +110,13 @@ export default ({
               setActiveLayer={setActiveLayer}
             />
             <svg id="board" xmlns="http://www.w3.org/2000/svg" version="1.1" width={board.width} height={board.height} x={board.left} y={board.top} ref={boardRef} >
-              {
-                bgImage
-                  ?
-                  <image
-                    xlinkHref={bgImage}
-                    x={board.left}
-                    y={board.top}
-                    width={board.width}
-                    height={board.height}
-                  />
-                  : null
-              }
+              <image
+                xlinkHref={bgImage}
+                x={board.left}
+                y={board.top}
+                width={board.width}
+                height={board.height}
+              />
               <rect
                 style={{
                   fill
@@ -132,20 +127,35 @@ export default ({
                 height={board.height}
               />
               {
-                monitors.map((monitor, index) =>
+                monitors.length > 0
+                  ?
+                  monitors.map((monitor, index) =>
+                    <Monitor
+                      key={index}
+                      layers={layers}
+                      setLayers={setLayers}
+                      board={board}
+                      width={monitor.split(',')[2] * zoom}
+                      height={monitor.split(',')[3] * zoom}
+                      top={monitor.split(',')[1] * zoom}
+                      left={monitor.split(',')[0] * zoom}
+                      activeLayer={activeLayer}
+                      setActiveLayer={setActiveLayer}
+                      boardRef={boardRef}
+                    />)
+                  :
                   <Monitor
-                    key={index}
                     layers={layers}
                     setLayers={setLayers}
                     board={board}
-                    width={monitor.split(',')[2] * zoom}
-                    height={monitor.split(',')[3] * zoom}
-                    top={monitor.split(',')[1] * zoom}
-                    left={monitor.split(',')[0] * zoom}
+                    width={board.width * zoom}
+                    height={board.height * zoom}
+                    top={board.top * zoom}
+                    left={board.left * zoom}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     boardRef={boardRef}
-                  />)
+                  />
               }
             </svg>
             <Content
