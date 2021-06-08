@@ -8,7 +8,16 @@ import { useHistory } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import Actions from '../components/Actions'
 import ConfirmDialog from '../components/ConfirmDialog'
+import Dialog from '../components/material/Dialog'
+import Cross from '../icons/Cross'
+import Button from '../components/material/Button'
+import PickDialog from '../components/PickDialog'
 import {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+
   CardContent,
   CardMedia,
   CircularProgress,
@@ -62,11 +71,64 @@ const useStyles = makeStyles({
     flex: 1
   }
 })
+const DailyDetailDialog = props => {
+  const {
+    isDialogOpen,
+    setDialogOpen
+  } = props
+  const [isPickDialogOpen, setPickDialogOpen] = React.useState(false)
+  return (
+    <Dialog
+      open={isDialogOpen}
+      onClose={() => setDialogOpen(false)}
+      fullScreen
+      maxWidth="lg"
+    >
+      <DialogTitle>
+        {''}
+      </DialogTitle>
+      <Cross style={{ position: 'absolute', right: '1.4rem', top: '1.4rem', cursor: 'pointer' }} onClick={() => setDialogOpen(false)} />
+      <Divider />
+      <DialogContent style={{ height: 700 }}>
+        <Button
+          onClick={() => setPickDialogOpen(true)}
+          color='primary'
+          variant="contained"
+          style={{ width: 100, marginLeft: '1.4rem' }}>
+          {'新增節目'}
+        </Button>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => setDialogOpen(false)}
+          variant="contained"
+          style={{ width: 100 }}>
+          {'取消'}
+        </Button>
+        <Button
+          onClick={() => setDialogOpen(false)}
+          color='primary'
+          variant="contained"
+          style={{ width: 100, marginLeft: '1.4rem' }}>
+          {'確認'}
+        </Button>
+      </DialogActions>
+      <PickDialog
+        isDialogOpen={isPickDialogOpen}
+        setDialogOpen={setPickDialogOpen}
+        titleText={'pick program'}
+        type={'program'}
+        confirmText={'確認'}
+        confirm={() => { }}
+      />
+    </Dialog>
+  )
+}
 export default () => {
   const classes = useStyles()
   const history = useHistory();
   const [dailys, setDailys] = React.useState([])
-  
+
   const [isDialogOpen, setDialogOpen] = React.useState(false)
   const [selected, setSelected] = React.useState({})
   const { status } = useSelector(state => state.drawer)
@@ -122,14 +184,9 @@ export default () => {
           )
         }
       </div>
-      <ConfirmDialog
+      <DailyDetailDialog
         isDialogOpen={isDialogOpen}
         setDialogOpen={setDialogOpen}
-        titleText={'刪除節目'}
-        content={`確認刪除${selected.pgname}嗎`}
-        confirmText={'刪除'}
-        confirm={() => {}}
-        warning
       />
     </div>
   )

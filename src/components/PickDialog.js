@@ -20,7 +20,7 @@ import Cross from '../icons/Cross'
 import { v4 as uuid } from 'uuid'
 import moment from 'moment'
 
-import { getmedialist } from '../utils/apis'
+import { getmedialist, getPgLstByUdid } from '../utils/apis'
 import convert from 'xml2js'
 const useStyles = makeStyles({
   root: {
@@ -134,6 +134,62 @@ const MediaContent = props => {
     </>
   )
 }
+const ProgramContent = props => {
+  const { programs, activated, setActivated, mutiple } = props
+  const classes = useStyles()
+  const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+  const mf = baseURL + '/mf'
+  const psn = baseURL + '/psn'
+  const handleClickProgram = program => {
+    if (mutiple) {
+      if (activated.find(act => act.pgid === program.pgid) === undefined) {
+        setActivated([...activated, { ...program }])
+      } else {
+        setActivated([...activated.filter(act => act.pgid !== program.pgid)])
+      }
+    } else {
+      if (activated.find(act => act.pgid === program.pgid) === undefined) {
+        setActivated([{ ...program }])
+      } else {
+        setActivated([])
+      }
+    }
+  }
+  return (
+    <>
+      {
+        programs.map(program =>
+          <Card
+            key={program.uuid}
+            className={classes.card}
+            style={{
+              width: '25%',
+              backgroundColor: activated.find(act => act.pgid === program.pgid) !== undefined ? '#bebebe' : '#fff'
+            }}
+            onClick={() => handleClickProgram(program)}>
+            <div style={{
+              padding: '0 10px 0 20px',
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '1.2rem'
+            }}>
+            {program.pgname}
+              <div style={{ flex: 1 }} />
+            </div>
+            <CardMedia
+              className={classes.media}
+              image={`${mf}${program.preview.split('mf')[1]}?t=${moment().unix()}`}
+            />
+            <CardContent style={{ padding: '.8rem 8px', display: 'flex' }}>
+              <div className={classes.spacer}></div>
+              {moment(program.utime).format('YYYY/MM/DD HH:mm')}
+            </CardContent>
+          </Card>
+        )
+      }
+    </>
+  )
+}
 export default props => {
   const {
     type,
@@ -149,21 +205,37 @@ export default props => {
   } = props
   const [targets, setTargets] = React.useState([])
   const [activated, setActivated] = React.useState([])
+  const { sel_udid } = useSelector(state => state.user)
   React.useEffect(() => {
     if (isDialogOpen) {
-      getmedialist({ udid: 1, foid: 0, mtype: type })
-        .then((response) => {
+      if (type === 'program') {
+        getPgLstByUdid({ select_udid: sel_udid }).then(response => {
           convert.parseString(response.data, { explicitArray: false }, (err, result) => {
             if (!err) {
-              if (result.root.media_info === undefined) return setTargets([])
-              if (Object.keys(result.root.media_info)[0] === '0') {
-                setTargets([...result.root.media_info.map(media => ({ ...media, uuid: uuid() }))])
+              if (result.root.pg_info === undefined) return setTargets([])
+              if (Object.keys(result.root.pg_info)[0] === '0') {
+                setTargets([...result.root.pg_info.map(program => ({ ...program, uuid: uuid() }))])
               } else {
-                setTargets([{ ...result.root.media_info, uuid: uuid() }])
+                setTargets([{ ...result.root.pg_info, uuid: uuid() }])
               }
             }
           })
         })
+      } else {
+        getmedialist({ udid: 1, foid: 0, mtype: type })
+          .then((response) => {
+            convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+              if (!err) {
+                if (result.root.media_info === undefined) return setTargets([])
+                if (Object.keys(result.root.media_info)[0] === '0') {
+                  setTargets([...result.root.media_info.map(media => ({ ...media, uuid: uuid() }))])
+                } else {
+                  setTargets([{ ...result.root.media_info, uuid: uuid() }])
+                }
+              }
+            })
+          })
+      }
     }
   }, [isDialogOpen])
 
@@ -195,7 +267,8 @@ export default props => {
         {
           {
             'video': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />,
-            'image': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />
+            'image': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />,
+            'program': <ProgramContent programs={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />
           }[type]
         }
       </DialogContent>
