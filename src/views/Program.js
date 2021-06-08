@@ -171,7 +171,7 @@ export default () => {
       select_udid: sel_udid,
       pgid_tmp,
       pgname: program.pgname,
-      bgcolor: '#FF000000',
+      bgcolor: program.bgcolor,
       bgimage: program.bgimage,
       bgmusic: program.bgmusic,
       mtype,
@@ -228,12 +228,16 @@ export default () => {
       formData.append('idx', i + 1)
       await updatePgct(formData)
     })
-    savePgInfo({ ...params }).then(async () => {
-      handleCaptureScreen()
+    savePgInfo({ ...params }).then(response => {
+      convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+        if (!err) {
+          handleCaptureScreen(result.root.pgid)
+        }
+      })
     })
   }
 
-  const handleCaptureScreen = async () => {
+  const handleCaptureScreen = async previewPgid => {
     const svgElement = document.getElementById('board')
     const svgString = new XMLSerializer().serializeToString(svgElement)
     const svg64 = btoa(unescape(encodeURIComponent(svgString)))
@@ -253,8 +257,8 @@ export default () => {
       var imgBase64 = canvas.toDataURL('image/png');
       // pass png data URL to callback
 
-      postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 0 }).then(() => {
-        postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 1 }).then(() => { })
+      postScreenshot({ previewPgid, previewPgname: program.pgname, imgBase64, flag: 0 }).then(() => {
+        postScreenshot({ previewPgid, previewPgname: program.pgname, imgBase64, flag: 1 }).then(() => { })
       })
     };
     image.src = svgBase64;

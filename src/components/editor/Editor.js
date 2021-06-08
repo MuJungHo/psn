@@ -16,8 +16,9 @@ const ProgramContent = () => {
   const { program } = useSelector(state => state.program)
   return (
     <div>
-      <input
+      <TextField
         type="text"
+        variant="outlined"
         value={program.pgname || ''}
         onChange={e => dispatch(setProgram({
           ...program,
@@ -52,13 +53,20 @@ export default ({
   const history = useHistory();
   const [activeLayer, setActiveLayer] = React.useState({})
   const [bgImage, setBgImage] = React.useState('')
+  const [fill, setFill] = React.useState('')
   const [content, setContent] = React.useState()
   React.useEffect(() => {
-    toDataURL(`${mf}/000/00/06/00000062.png`, (dataUrl) => {
-      setBgImage(dataUrl)
-    })
-  }, [])
+    if (program.bgimage !== '0') {
+      toDataURL(`${mf}/000/00/06/00000062.png`, (dataUrl) => {
+        setBgImage(dataUrl)
+      })
+    }
+  }, [program.bgimage])
 
+  React.useEffect(() => {
+    setFill(`#${program.bgcolor.substring(3)}`)
+  }, [program.bgcolor])
+  
   React.useEffect(() => {
     setContent(
       JSON.stringify(activeLayer) === '{}'
@@ -102,18 +110,21 @@ export default ({
               setActiveLayer={setActiveLayer}
             />
             <svg id="board" xmlns="http://www.w3.org/2000/svg" version="1.1" width={board.width} height={board.height} x={board.left} y={board.top} ref={boardRef} >
-
-              <image
-                xlinkHref={bgImage}
-                x={board.left}
-                y={board.top}
-                width={board.width}
-                height={board.height}
-              />
+              {
+                bgImage
+                  ?
+                  <image
+                    xlinkHref={bgImage}
+                    x={board.left}
+                    y={board.top}
+                    width={board.width}
+                    height={board.height}
+                  />
+                  : null
+              }
               <rect
                 style={{
-                  fill: '#000',
-                  fillOpacity: '.5'
+                  fill
                 }}
                 x={board.left}
                 y={board.top}

@@ -14,10 +14,13 @@ export default ({
   board
 }) => {
   const { program } = useSelector(state => state.program)
-  const fill = program.bgcolor ? `#${program.bgcolor.substring(3, 9)}` : '#ffffff'
+  const [fill, setFill] = React.useState('')
+  React.useEffect(() => {
+    setFill(`#${program.bgcolor.substring(3)}`)
+  }, [program.bgcolor])
   return (
     <>
-      <rect onClick={() => setActiveLayer({})} width={width} height={height} x={left} y={top} fill={fill} fillOpacity={program.bgimage ? 0 : 1}></rect>
+      <rect onClick={() => setActiveLayer({})} width={width} height={height} x={left} y={top} fill={fill}></rect>
       {
         layers.map(layer =>
           <Layer
