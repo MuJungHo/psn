@@ -11,18 +11,20 @@ import html2canvas from 'html2canvas'
 import { v4 as uuid } from 'uuid'
 import canvg from 'canvg'
 import { getCookie } from '../utils/libs'
+import { setProgram } from '../actions/program'
 export default () => {
   const { pgid } = useParams()
   const history = useHistory();
+  const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(true)
   const [layers, setLayers] = React.useState([])
   const [monitors, setMonitors] = React.useState([])
   const [zoom, setZoom] = React.useState(1)
-  const [program, setProgram] = React.useState({})
   const [pgid_tmp, setTempPgid] = React.useState()
   const [tempFolderId, setTempFolderId] = React.useState()
   const [targetFolder, setTargetFolderId] = React.useState()
   const { status } = useSelector(state => state.drawer)
+  const { program } = useSelector(state => state.program)
   const { sel_udid } = useSelector(state => state.user)
   const space = {
     width: window.innerWidth - 260 - 300 - 150,
@@ -51,7 +53,7 @@ export default () => {
               ptid: (index + 1).toString()
             }))
             var preview_pgid_tmp = result.root.pginfo.pgid_tmp
-            setProgram({ ...result.root.pginfo })
+            dispatch(setProgram({ ...result.root.pginfo }))
             setMonitors(result.root.pginfo.moniarea.split('|'))
             setBoard({
               width: Math.round(result.root.pginfo.w * tempZoom),
@@ -140,7 +142,7 @@ export default () => {
         })
       })
   }, [])
-  
+
   const handleSaveProgram = async () => {
     var mtype = layers.map(layer => layer.mtype).join('|')
     var layout = layers.map(layer => `${layer.left / zoom},${layer.top / zoom},${layer.width / zoom},${layer.height / zoom}`).join('|')
@@ -226,7 +228,7 @@ export default () => {
       handleCaptureScreen()
     })
   }
-  
+
   const handleCaptureScreen = async () => {
     const svgElement = document.getElementById('board')
     const svgString = new XMLSerializer().serializeToString(svgElement)
@@ -248,7 +250,7 @@ export default () => {
       // pass png data URL to callback
 
       postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 0 }).then(() => {
-        postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 1 }).then(() => {})
+        postScreenshot({ previewPgid: pgid, previewPgname: program.pgname, imgBase64, flag: 1 }).then(() => { })
       })
     };
     image.src = svgBase64;
@@ -263,8 +265,6 @@ export default () => {
       board={board}
       zoom={zoom}
       setZoom={setZoom}
-      program={program}
-      setProgram={setProgram}
       save={handleSaveProgram}
       loading={loading}
     />

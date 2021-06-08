@@ -1,35 +1,37 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import Monitor from './Monitor'
 import Content from './Content'
 import ActionBar from './ActionBar'
 import { useHistory } from "react-router-dom"
 import { Backdrop, CircularProgress } from '@material-ui/core';
+import { setProgram } from '../../actions/program'
 import TextField from '../material/TextField'
 import ActiveLayerContent from './contents/ActiveLayerContent'
 const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
 const psn = baseURL + '/psn'
 const mf = baseURL + '/mf'
-const ProgramContent = props => {
-  const { program, setProgram } = props
+const ProgramContent = () => {
+  const dispatch = useDispatch()
+  const { program } = useSelector(state => state.program)
   return (
     <div>
-      <TextField
+      <input
         type="text"
-        variant="outlined"
         value={program.pgname || ''}
-        onChange={e => setProgram({
+        onChange={e => dispatch(setProgram({
           ...program,
           pgname: e.target.value
-        })}
+        }))}
       />
       <TextField
         type="text"
         variant="outlined"
         value={program.bgcolor || ''}
-        onChange={e => setProgram({
+        onChange={e => dispatch(setProgram({
           ...program,
           bgcolor: e.target.value
-        })}
+        }))}
       />
     </div>
   )
@@ -42,11 +44,10 @@ export default ({
   board,
   zoom,
   setZoom,
-  program,
-  setProgram,
   save,
   loading
 }) => {
+  const { program } = useSelector(state => state.program)
   const boardRef = React.useRef()
   const history = useHistory();
   const [activeLayer, setActiveLayer] = React.useState({})
@@ -61,8 +62,8 @@ export default ({
   React.useEffect(() => {
     setContent(
       JSON.stringify(activeLayer) === '{}'
-        ? <ProgramContent program={program} setProgram={setProgram} />
-        : <ActiveLayerContent setActiveLayer={setActiveLayer} activeLayer={activeLayer} layers={layers} setLayers={setLayers} program={program} />)
+        ? <ProgramContent />
+        : <ActiveLayerContent setActiveLayer={setActiveLayer} activeLayer={activeLayer} layers={layers} setLayers={setLayers} />)
   }, [activeLayer])
 
   function toDataURL(url, callback) {
@@ -131,7 +132,6 @@ export default ({
                     height={monitor.split(',')[3] * zoom}
                     top={monitor.split(',')[1] * zoom}
                     left={monitor.split(',')[0] * zoom}
-                    program={program}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     boardRef={boardRef}
@@ -142,8 +142,6 @@ export default ({
               save={save}
               layers={layers}
               setLayers={setLayers}
-              program={program}
-              setProgram={setProgram}
               activeLayer={activeLayer}
               setActiveLayer={setActiveLayer}
               content={content}

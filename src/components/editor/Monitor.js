@@ -1,5 +1,6 @@
 import React from 'react'
 import Layer from './Layer'
+import { useSelector } from 'react-redux'
 export default ({
   layers,
   setLayers,
@@ -7,12 +8,12 @@ export default ({
   height,
   top,
   left,
-  program,
   activeLayer,
   setActiveLayer,
   boardRef,
   board
 }) => {
+  const { program } = useSelector(state => state.program)
   const fill = program.bgcolor ? `#${program.bgcolor.substring(3, 9)}` : '#ffffff'
   return (
     <>
