@@ -32,6 +32,7 @@ export const updatePgct = data => instance({
   data
 })
 export const getscriptlist = params => postFormData('/pg.py', { cmd: 'getscriptlist', ...params })
+export const delpg = params => postFormData('/pg.py', { cmd: 'delpg', ...params })
 
 
 //daily

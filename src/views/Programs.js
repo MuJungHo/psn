@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
-import { getPgLstByUdid } from '../utils/apis'
+import { getPgLstByUdid, delpg } from '../utils/apis'
 import { useSelector } from 'react-redux'
 import { useHistory } from "react-router-dom"
 import Actions from '../components/Actions'
@@ -16,9 +16,11 @@ import {
   Divider,
 } from '@material-ui/core'
 
+import ConfirmDialog from '../components/ConfirmDialog'
 import Select from '../components/material/Select'
 import InputGray from '../components/material/InputGray'
 import Arrow from "../icons/Arrow"
+import { getCookie } from '../utils/libs'
 const useStyles = makeStyles({
   root: {
     width: '100%',
@@ -77,11 +79,14 @@ export default () => {
   const classes = useStyles()
   const history = useHistory();
   const [programs, setPrograms] = React.useState([])
+  const [selected, setSelected] = React.useState({})
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [filters, setFilters] = React.useState({
     ios: ''
   })
   const { status } = useSelector(state => state.drawer)
   const { sel_udid } = useSelector(state => state.user)
+  const uid = getCookie('login_uid') || 1
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
   const psn = baseURL + '/psn'
   const mf = baseURL + '/mf'
@@ -101,6 +106,28 @@ export default () => {
       })
     }
   }, [sel_udid])
+  const handleDeleteProgram = program => {
+    setDeleteDialogOpen(true)
+    setSelected({ ...program })
+  }
+  const doDeleteProgram = () => {
+    delpg({ sel_udid, uid, PgidList: selected.pgid })
+      .then(() => {
+        getPgLstByUdid({ select_udid: sel_udid }).then(response => {
+          setDeleteDialogOpen(false)
+          convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+            if (!err) {
+              if (result.root.pg_info === undefined) return setPrograms([])
+              if (Object.keys(result.root.pg_info)[0] === '0') {
+                setPrograms([...result.root.pg_info])
+              } else {
+                setPrograms([{ ...result.root.pg_info }])
+              }
+            }
+          })
+        })
+      })
+  }
   return (
     <div className={classes.root}>
       <Card >
@@ -143,7 +170,9 @@ export default () => {
               }}>
                 {program.pgname}
                 <div style={{ flex: 1 }} />
-                <Actions items={[]} />
+                <Actions items={[
+                  { name: '刪除', onClick: () => handleDeleteProgram(program) },
+                ]} />
               </div>
               <CardMedia
                 className={classes.media}
@@ -158,6 +187,16 @@ export default () => {
           )
         }
       </div>
+
+      <ConfirmDialog
+        isDialogOpen={isDeleteDialogOpen}
+        setDialogOpen={setDeleteDialogOpen}
+        titleText={'刪除節目'}
+        content={`確認刪除${selected.pgname}嗎`}
+        confirmText={'刪除'}
+        confirm={doDeleteProgram}
+        warning
+      />
     </div>
   )
 }
