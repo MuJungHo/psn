@@ -31,6 +31,7 @@ export const updatePgct = data => instance({
   url: '/pg.py',
   data
 })
+export const getscriptlist = params => postFormData('/pg.py', { cmd: 'getscriptlist', ...params })
 
 
 //daily

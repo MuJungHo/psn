@@ -7,7 +7,6 @@ import { getPgLstByUdid } from '../utils/apis'
 import { useSelector } from 'react-redux'
 import { useHistory } from "react-router-dom"
 import Actions from '../components/Actions'
-
 import {
   CardContent,
   CardMedia,
@@ -67,23 +66,26 @@ export default () => {
   const history = useHistory();
   const [programs, setPrograms] = React.useState([])
   const { status } = useSelector(state => state.drawer)
+  const { sel_udid } = useSelector(state => state.user)
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
   const psn = baseURL + '/psn'
   const mf = baseURL + '/mf'
   React.useEffect(() => {
-    getPgLstByUdid({}).then(response => {
-      convert.parseString(response.data, { explicitArray: false }, (err, result) => {
-        if (!err) {
-          if (result.root.pg_info === undefined) return setPrograms([])
-          if (Object.keys(result.root.pg_info)[0] === '0') {
-            setPrograms([...result.root.pg_info])
-          } else {
-            setPrograms([{ ...result.root.pg_info }])
+    if (sel_udid) {
+      getPgLstByUdid({ select_udid: sel_udid }).then(response => {
+        convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+          if (!err) {
+            if (result.root.pg_info === undefined) return setPrograms([])
+            if (Object.keys(result.root.pg_info)[0] === '0') {
+              setPrograms([...result.root.pg_info])
+            } else {
+              setPrograms([{ ...result.root.pg_info }])
+            }
           }
-        }
+        })
       })
-    })
-  }, [])
+    }
+  }, [sel_udid])
   return (
     <div className={classes.root}>
       <div className={classes.container}>
@@ -93,7 +95,7 @@ export default () => {
               key={key}
               className={classes.card}
               style={{
-                width: status ? '15.1%': '12.7%'
+                width: status ? '15.1%' : '12.7%'
               }}
               onClick={() => history.push(`/newui/program/${program.pgid}`)}
             >
