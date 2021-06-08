@@ -120,7 +120,6 @@ export default ({
                 width={board.width}
                 height={board.height}
               />
-
               {
                 monitors.map((monitor, index) =>
                   <Monitor

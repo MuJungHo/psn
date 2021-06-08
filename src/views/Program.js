@@ -54,7 +54,11 @@ export default () => {
             }))
             var preview_pgid_tmp = result.root.pginfo.pgid_tmp
             dispatch(setProgram({ ...result.root.pginfo }))
-            setMonitors(result.root.pginfo.moniarea.split('|'))
+            setMonitors(
+              result.root.pginfo.moniarea
+                ? result.root.pginfo.moniarea.split('|')
+                : []
+            )
             setBoard({
               width: Math.round(result.root.pginfo.w * tempZoom),
               height: Math.round(result.root.pginfo.h * tempZoom),

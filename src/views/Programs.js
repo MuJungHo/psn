@@ -119,7 +119,7 @@ export default () => {
           </Select>
           <div className={classes.spacer} />
           <Actions items={[
-            { name: 'Windows', onClick: () => { } },
+            { name: 'Windows', onClick: () => history.push(`/newui/program/0`) },
             { name: 'Android', onClick: () => { } },
           ]} btnText={'新增節目'} btnIcon={<Add />} />
         </CardContent>
