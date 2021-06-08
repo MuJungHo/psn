@@ -194,7 +194,7 @@ export default props => {
         isDialogOpen={isPickDialogOpen}
         setDialogOpen={setPickDialogOpen}
         titleText={'pick media'}
-        mtype={activeLayer.mtype}
+        type={activeLayer.mtype}
         mutiple
         confirmText={'確認'}
         confirm={doAddLayerInfo}

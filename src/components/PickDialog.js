@@ -136,7 +136,7 @@ const MediaContent = props => {
 }
 export default props => {
   const {
-    mtype,
+    type,
     titleText,
     isDialogOpen,
     setDialogOpen,
@@ -147,12 +147,11 @@ export default props => {
     cancelText,
     mutiple
   } = props
-  // console.log(mtype)
   const [targets, setTargets] = React.useState([])
   const [activated, setActivated] = React.useState([])
   React.useEffect(() => {
     if (isDialogOpen) {
-      getmedialist({ udid: 1, foid: 0, mtype })
+      getmedialist({ udid: 1, foid: 0, mtype: type })
         .then((response) => {
           convert.parseString(response.data, { explicitArray: false }, (err, result) => {
             if (!err) {
@@ -197,7 +196,7 @@ export default props => {
           {
             'video': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />,
             'image': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />
-          }[mtype]
+          }[type]
         }
       </DialogContent>
       <DialogActions>

@@ -64,7 +64,7 @@ const LayerTypePicker = props => {
   const doAddLayer = mtype => {
 
     var ptids = layers.map(layer => Number(layer.ptid))
-    var newPtid = String(Math.max(...ptids) + 1)
+    var newPtid = ptids.length > 0 ? String(Math.max(...ptids) + 1) : '1'
     var newLayer = {
       ptid: newPtid,
       width: Math.round(100 * zoom),

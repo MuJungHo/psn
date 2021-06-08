@@ -148,10 +148,10 @@ export default ({
                     layers={layers}
                     setLayers={setLayers}
                     board={board}
-                    width={board.width * zoom}
-                    height={board.height * zoom}
-                    top={board.top * zoom}
-                    left={board.left * zoom}
+                    width={board.width}
+                    height={board.height}
+                    top={board.top}
+                    left={board.left}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     boardRef={boardRef}

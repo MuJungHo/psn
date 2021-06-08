@@ -7,6 +7,7 @@ import { getScList } from '../utils/apis'
 import { useHistory } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import Actions from '../components/Actions'
+import ConfirmDialog from '../components/ConfirmDialog'
 import {
   CardContent,
   CardMedia,
@@ -65,12 +66,16 @@ export default () => {
   const classes = useStyles()
   const history = useHistory();
   const [dailys, setDailys] = React.useState([])
+  
+  const [isDialogOpen, setDialogOpen] = React.useState(false)
+  const [selected, setSelected] = React.useState({})
   const { status } = useSelector(state => state.drawer)
+  const { sel_udid } = useSelector(state => state.user)
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
   const psn = baseURL + '/psn'
   const mf = baseURL + '/mf'
   React.useEffect(() => {
-    getScList({ sel_udid: 1, sortType: 0 })
+    getScList({ sel_udid, sortType: 0 })
       .then((response) => {
         convert.parseString(response.data, { explicitArray: false }, (err, result) => {
           if (!err) {
@@ -80,7 +85,7 @@ export default () => {
           }
         })
       })
-  }, [])
+  }, [sel_udid])
 
   return (
     <div className={classes.root}>
@@ -90,8 +95,9 @@ export default () => {
             <Card
               key={key}
               className={classes.card}
+              onClick={() => setDialogOpen(true)}
               style={{
-                width: status ? '15.1%': '12.7%'
+                width: status ? '15.1%' : '12.7%'
               }}
             >
               <div style={{
@@ -116,6 +122,15 @@ export default () => {
           )
         }
       </div>
+      <ConfirmDialog
+        isDialogOpen={isDialogOpen}
+        setDialogOpen={setDialogOpen}
+        titleText={'刪除節目'}
+        content={`確認刪除${selected.pgname}嗎`}
+        confirmText={'刪除'}
+        confirm={() => {}}
+        warning
+      />
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import React from 'react'
 import { v4 as uuid } from 'uuid'
-import PickDialog from '../../PickDialog'
 import LayerDetailDialog from '../../editor/LayerDetailDialog'
 import ActionButton from '../../material/ActionButton'
 import TextField from '../../material/TextField'
@@ -29,7 +28,6 @@ export default props => {
     })
     setLayers([...updatedLayers])
     setActiveLayer({ ...updatedLayer })
-    console.log(updatedLayer)
   }
   return (
     <>
