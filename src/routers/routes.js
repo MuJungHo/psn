@@ -63,7 +63,7 @@ const routes = [
     component: History
   },
   {
-    path: '/newui/device',
+    path: '/newui/device/:dpid',
     component: Device
   },
   {

@@ -2,7 +2,7 @@ import axios from 'axios'
 const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
 
 export const instance = axios.create({
-  baseURL:  baseURL  + '/psn/psn_mod',
+  baseURL: baseURL + '/psn/psn_mod',
   timeout: 10000
 })
 
@@ -45,9 +45,16 @@ export const getNsList = params => postFormData('/schedule.py', { cmd: 'getNsLis
 export const loadNs = params => postFormData('/schedule.py', { cmd: 'loadNs', ...params })
 export const saveNs = params => postFormData('/schedule.py', { cmd: 'saveNs', ...params })
 
-//device
+//dp
 export const getdplist = params => postFormData('/dp.py', { cmd: 'getdplist', ...params })
 export const GetAllDp = params => postFormData('/dp.py', { cmd: 'GetAllDp', ...params })
+export const getDpDetail = params => postFormData('/dp.py', { cmd: 'getDpDetail', ...params })
+export const getDpHardware = params => postFormData('/dp.py', { cmd: 'getDpHardware', ...params })
+export const getDpSoftware = params => postFormData('/dp.py', { cmd: 'getDpSoftware', ...params })
+export const GetRecentClientLog = params => postFormData('/dp.py', { cmd: 'GetRecentClientLog', ...params })
+
+//screen_download
+export const screen_download = params => postFormData('/screen_download.py', { ...params })
 
 //dispatch
 export const dispatch_sch = params => postFormData('/dispatch.py', { cmd: 'dispatch_sch', ...params })

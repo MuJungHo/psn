@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles'
 import {
   Typography,
@@ -143,7 +144,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 export default () => {
-
   const classes = useStyles();
   const [rows, setRows] = React.useState([])
   const [order, setOrder] = React.useState('asc');
@@ -152,6 +152,7 @@ export default () => {
   const [page, setPage] = React.useState(1);
   const rowsPerPage = Math.floor((window.innerHeight - 370) / 53)
   const [devices, setDevices] = React.useState([])
+  const history = useHistory();
 
 
   React.useEffect(() => {
@@ -213,7 +214,6 @@ export default () => {
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
-            {console.log(rows)}
             <TableBody className={classes.tableBody}>
               {stableSort(rows, getComparator(order, orderBy))
                 .slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage)
@@ -224,7 +224,7 @@ export default () => {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={index}
+                      key={row.dpid}
                       hover
                     >
                       <TableCell align="left">{row.dpname}</TableCell>
@@ -232,7 +232,10 @@ export default () => {
                       <TableCell align="left">{row.udname}</TableCell>
                       <TableCell align="left">{row.dpver}</TableCell>
                       <TableCell align="left">{row.dpos}</TableCell>
-                      <TableCell align="left"><Actions items={[]} /></TableCell>
+                      <TableCell align="left"><Actions items={[
+                        { name: '調整音量', onClick: () => { } },
+                        { name: '詳細資料', onClick: () => history.push(`/newui/device/${row.dpid}`) },
+                      ]} /></TableCell>
                     </TableRow>
                   );
                 })}
