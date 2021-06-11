@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
-import { getNsList, dispatchSch, getdplist } from '../utils/apis'
+import { getNsList, dispatchSch, getdplist, loadNs, getScList, saveNs } from '../utils/apis'
 import Select from '../components/material/Select'
 import InputGray from '../components/material/InputGray'
 import Arrow from "../icons/Arrow"
@@ -77,12 +77,17 @@ export default () => {
   const [dispatchTime, setDispatchTime] = React.useState(0)
   const [dispatchDate, setDispatchDate] = React.useState(new Date())
   const [dispatchDialogOpen, setDispatchDialogOpen] = React.useState(false)
+  const [schDialogOpen, setSchDialogOpen] = React.useState(false)
+  const [selected, setSelected] = React.useState('')
+  const [dailys, setDailys] = React.useState([])
+  const [params, setParams] = React.useState({})
   const { status } = useSelector(state => state.drawer)
+  const { sel_udid } = useSelector(state => state.user)
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
   const psn = baseURL + '/psn'
   const mf = baseURL + '/mf'
   React.useEffect(() => {
-    getNsList({ sel_udid: 1, sortType: 0 })
+    getNsList({ sel_udid, sortType: 0 })
       .then((response) => {
         convert.parseString(response.data, { explicitArray: false }, (err, result) => {
           if (!err) {
@@ -101,7 +106,31 @@ export default () => {
           })
       })
   }, [])
-  
+  React.useEffect(() => {
+    if (schDialogOpen) {
+      getScList({ sel_udid, sortType: 0 })
+        .then(resSch => {
+          var tempDailys = []
+          convert.parseString(resSch.data, { explicitArray: false }, (err, schResult) => {
+            tempDailys = schResult.root.schedule.map(daily => daily.$).filter(daily => daily.scid !== "0")
+            setDailys([...tempDailys])
+          })
+          loadNs({ sel_udid, nsid: selected })
+            .then((response) => {
+              convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+                if (!err) {
+                  const defaultDaily = tempDailys.find(daily => daily.scname === result.root.default.$.def01)
+                  setParams({
+                    default: defaultDaily,
+                    nschedule: { ...result.root.nschedule.$ }
+                  })
+                }
+              })
+
+            })
+        })
+    }
+  }, [schDialogOpen])
   const handleSetDispatchDialogOpen = (sch) => {
     setSchedule(sch)
     setDispatchDialogOpen(true)
@@ -111,6 +140,21 @@ export default () => {
     var time = moment(dispatchTime).format('HHmm')
     dispatchSch({ dph_time: `${date}${time}`, start_time: '000101010000', dplst: device, uid: 1, nsid: schedule })
       .then(res => console.log(res))
+  }
+  const handleLoadSch = (schedule) => {
+    setSelected(schedule.nsid)
+    setSchDialogOpen(true)
+  }
+  const handleSaveSch = () => {
+    const defRec = [params.default.scid, null, null, null, null, null, null, null, null, null]
+    // console.log(selected)
+    saveNs({
+      nsname: params.nschedule.nsname,
+      nsid: selected,
+      udid: sel_udid,
+      scRec: JSON.stringify([]),
+      defRec: JSON.stringify(defRec)
+    }).then(() => setSchDialogOpen(false))
   }
   return (
     <div className={classes.root}>
@@ -123,6 +167,7 @@ export default () => {
               style={{
                 width: status ? '15.1%' : '12.7%'
               }}
+              onClick={() => handleLoadSch(schedule)}
             >
               <div style={{
                 padding: '0 10px 0 20px',
@@ -147,6 +192,30 @@ export default () => {
           )
         }
       </div>
+      <ConfirmDialog
+        isDialogOpen={schDialogOpen}
+        setDialogOpen={setSchDialogOpen}
+        titleText={'設定預設節目表'}
+        content={
+          <>
+            <Select
+              input={<InputGray />}
+              IconComponent={Arrow}
+              value={params.default && params.default.scid || ''}
+              onChange={e => setDevice(e.target.value)}
+              displayEmpty
+            >
+              {console.log(params)}
+              <MenuItem value=''>{'選擇單日節目表'}</MenuItem>
+              {
+                dailys.map(daily => <MenuItem value={daily.scid} key={daily.scname}>{daily.scname}</MenuItem>)
+              }
+            </Select>
+          </>
+        }
+        confirmText={'確認'}
+        confirm={handleSaveSch}
+      />
       <ConfirmDialog
         isDialogOpen={dispatchDialogOpen}
         setDialogOpen={setDispatchDialogOpen}

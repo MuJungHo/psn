@@ -42,6 +42,8 @@ export const saveSc = params => postFormData('/schedule.py', { cmd: 'saveSc', ..
 
 //schedule
 export const getNsList = params => postFormData('/schedule.py', { cmd: 'getNsList', ...params })
+export const loadNs = params => postFormData('/schedule.py', { cmd: 'loadNs', ...params })
+export const saveNs = params => postFormData('/schedule.py', { cmd: 'saveNs', ...params })
 
 //device
 export const getdplist = params => postFormData('/dp.py', { cmd: 'getdplist', ...params })

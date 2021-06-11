@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
-import { getScList } from '../utils/apis'
 import { useHistory } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import Actions from '../components/Actions'
@@ -22,7 +21,7 @@ import {
   CardMedia,
   CircularProgress,
 } from '@material-ui/core'
-import { getPgLstByUdid } from '../utils/apis'
+import { getPgLstByUdid, getScList } from '../utils/apis'
 const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
 const psn = baseURL + '/psn'
 const mf = baseURL + '/mf'
