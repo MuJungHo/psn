@@ -27,7 +27,7 @@ const routes = [
     component: Medias
   },
   {
-    path: '/newui/daily',
+    path: '/newui/daily/:scid',
     component: Daily
   },
   {

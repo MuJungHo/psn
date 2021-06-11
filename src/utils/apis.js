@@ -37,6 +37,8 @@ export const delpg = params => postFormData('/pg.py', { cmd: 'delpg', ...params 
 
 //daily
 export const getScList = params => postFormData('/schedule.py', { cmd: 'getScList', ...params })
+export const loadSc = params => postFormData('/schedule.py', { cmd: 'loadSc', ...params })
+export const saveSc = params => postFormData('/schedule.py', { cmd: 'saveSc', ...params })
 
 //schedule
 export const getNsList = params => postFormData('/schedule.py', { cmd: 'getNsList', ...params })

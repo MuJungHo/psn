@@ -22,6 +22,10 @@ import {
   CardMedia,
   CircularProgress,
 } from '@material-ui/core'
+import { getPgLstByUdid } from '../utils/apis'
+const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+const psn = baseURL + '/psn'
+const mf = baseURL + '/mf'
 
 const useStyles = makeStyles({
   root: {
@@ -76,7 +80,24 @@ const DailyDetailDialog = props => {
     isDialogOpen,
     setDialogOpen
   } = props
-  const [isPickDialogOpen, setPickDialogOpen] = React.useState(false)
+  const classes = useStyles()
+  const [programs, setPrograms] = React.useState([])
+  const { sel_udid } = useSelector(state => state.user)
+  React.useEffect(() => {
+
+    getPgLstByUdid({ select_udid: sel_udid }).then(response => {
+      convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+        if (!err) {
+          if (result.root.pg_info === undefined) return setPrograms([])
+          if (Object.keys(result.root.pg_info)[0] === '0') {
+            setPrograms([...result.root.pg_info.map(program => ({ ...program }))])
+          } else {
+            setPrograms([{ ...result.root.pg_info }])
+          }
+        }
+      })
+    })
+  }, [isDialogOpen])
   return (
     <Dialog
       open={isDialogOpen}
@@ -90,13 +111,37 @@ const DailyDetailDialog = props => {
       <Cross style={{ position: 'absolute', right: '1.4rem', top: '1.4rem', cursor: 'pointer' }} onClick={() => setDialogOpen(false)} />
       <Divider />
       <DialogContent style={{ height: 700 }}>
-        <Button
-          onClick={() => setPickDialogOpen(true)}
-          color='primary'
-          variant="contained"
-          style={{ width: 100, marginLeft: '1.4rem' }}>
-          {'新增節目'}
-        </Button>
+        <div style={{ display: 'flex' }}>
+          {
+            programs.map(program =>
+              <Card
+                key={program.uuid}
+                className={classes.card}
+                style={{
+                  width: 250,
+                  backgroundColor: '#fff'
+                }} >
+                <div style={{
+                  padding: '0 10px 0 20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  fontSize: '1.2rem'
+                }}>
+                  {program.pgname}
+                  <div style={{ flex: 1 }} />
+                </div>
+                <CardMedia
+                  className={classes.media}
+                  image={`${mf}${program.preview.split('mf')[1]}?t=${moment().unix()}`}
+                />
+                <CardContent style={{ padding: '.8rem 8px', display: 'flex' }}>
+                  <div className={classes.spacer}></div>
+                  {moment(program.utime).format('YYYY/MM/DD HH:mm')}
+                </CardContent>
+              </Card>
+            )
+          }
+        </div>
       </DialogContent>
       <DialogActions>
         <Button
@@ -113,14 +158,6 @@ const DailyDetailDialog = props => {
           {'確認'}
         </Button>
       </DialogActions>
-      <PickDialog
-        isDialogOpen={isPickDialogOpen}
-        setDialogOpen={setPickDialogOpen}
-        titleText={'pick program'}
-        type={'program'}
-        confirmText={'確認'}
-        confirm={() => { }}
-      />
     </Dialog>
   )
 }
@@ -133,9 +170,6 @@ export default () => {
   const [selected, setSelected] = React.useState({})
   const { status } = useSelector(state => state.drawer)
   const { sel_udid } = useSelector(state => state.user)
-  const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
-  const psn = baseURL + '/psn'
-  const mf = baseURL + '/mf'
   React.useEffect(() => {
     getScList({ sel_udid, sortType: 0 })
       .then((response) => {
@@ -157,7 +191,7 @@ export default () => {
             <Card
               key={key}
               className={classes.card}
-              onClick={() => setDialogOpen(true)}
+              onClick={() => history.push(`/newui/daily/${daily.scid}`)}
               style={{
                 width: status ? '15.1%' : '12.7%'
               }}
