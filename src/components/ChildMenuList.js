@@ -59,19 +59,15 @@ export default () => {
       ]
     },
     {
+      to: '/newui/dispatch',
       name: '派送',
-      icon: <Pad/>,
-      childs: [
-        { value: '/newui/dispatch', name: '派送' },
-        { value: '/newui/status', name: '狀態' },
-        { value: '/newui/history', name: '歷史' }
-      ]
+      icon: <Setting/>
     },
     {
       to: '/newui/devices',
-      icon: <Setting/>,
+      icon: <Pad/>,
       name: '設備'
-    }
+    },
   ]
   React.useEffect(() => {
     setPathname(location.pathname)

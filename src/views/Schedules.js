@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
-import { getNsList, dispatchSch, getdplist, loadNs, getScList, saveNs } from '../utils/apis'
+import { getNsList, dispatch_sch, getdplist, loadNs, getScList, saveNs } from '../utils/apis'
 import Select from '../components/material/Select'
 import InputGray from '../components/material/InputGray'
 import Arrow from "../icons/Arrow"
@@ -138,7 +138,7 @@ export default () => {
   const handleDispatch = () => {
     var date = moment(dispatchDate).format('YYYYMMDD')
     var time = moment(dispatchTime).format('HHmm')
-    dispatchSch({ dph_time: `${date}${time}`, start_time: '000101010000', dplst: device, uid: 1, nsid: schedule })
+    dispatch_sch({ dph_time: `${date}${time}`, start_time: '000101010000', dplst: device, uid: 1, nsid: schedule })
       .then(res => console.log(res))
   }
   const handleLoadSch = (schedule) => {

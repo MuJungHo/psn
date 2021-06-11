@@ -50,4 +50,6 @@ export const getdplist = params => postFormData('/dp.py', { cmd: 'getdplist', ..
 export const GetAllDp = params => postFormData('/dp.py', { cmd: 'GetAllDp', ...params })
 
 //dispatch
-export const dispatchSch = params => postFormData('/dispatch.py', { cmd: 'dispatch_sch', ...params })
+export const dispatch_sch = params => postFormData('/dispatch.py', { cmd: 'dispatch_sch', ...params })
+export const getDPHHistory = params => postFormData('/dispatch.py', { cmd: 'getDPHHistory', ...params })
+export const getDPHState = params => postFormData('/dispatch.py', { cmd: 'getDPHState', ...params })
