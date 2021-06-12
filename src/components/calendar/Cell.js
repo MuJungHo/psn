@@ -1,5 +1,4 @@
 import React from 'react'
-import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles({
   cell: {
@@ -10,10 +9,43 @@ const useStyles = makeStyles({
   }
 })
 export default props => {
-  const { date } = props
+  const {
+    date,
+    isPicking,
+    setPicking,
+    pickingRange,
+    setPickingRange,
+    tempEndDate,
+    setTempEndDate
+  } = props
   const classes = useStyles()
+  const isCellActive = isPicking
+    && (
+      (new Date(date) >= new Date(pickingRange[0]) && new Date(date) <= new Date(tempEndDate))
+      || (new Date(date) <= new Date(pickingRange[0]) && new Date(date) >= new Date(tempEndDate))
+    )
+  const handleClickCell = () => {
+    if (isPicking) {
+      setPickingRange([...pickingRange, date])
+      setTempEndDate('')
+    } else {
+      setPickingRange([date])
+      setTempEndDate(date)
+    }
+    setPicking(!isPicking)
+  }
+  const handleHoverCell = () => {
+    if (isPicking) {
+      setTempEndDate(date)
+    }
+  }
   return (
-    <div className={classes.cell}>
+    <div
+      className={classes.cell}
+      onClick={handleClickCell}
+      onMouseEnter={handleHoverCell}
+      style={{ backgroundColor: isCellActive ? '#bebebe' : '#fff' }}
+    >
       {date}
     </div>
   )

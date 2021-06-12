@@ -1,8 +1,6 @@
 import React from 'react'
-import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles'
 import Cell from './Cell'
-import Paper from '../material/Paper'
 import ActionButton from '../material/ActionButton'
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -25,6 +23,9 @@ const useStyles = makeStyles({
 export default () => {
   const classes = useStyles()
   const dt = new Date()
+  const [isPicking, setPicking] = React.useState(false)
+  const [pickingRange, setPickingRange] = React.useState([])
+  const [tempEndDate, setTempEndDate] = React.useState('')
   const [year, setYear] = React.useState(dt.getFullYear())
   const [month, setMonth] = React.useState(dt.getMonth())
   const currMonthFirstDay = new Date(year, month, 1).getDay()
@@ -55,6 +56,9 @@ export default () => {
       setMonth(month + 1)
     }
   }
+  // var startdate = new Date('06/06/2013');
+  // var startD = new Date('06/06/2013');
+  console.log(pickingRange)
   return (
     <div className={classes.root}>
       <div style={{ height: 50 }}>
@@ -68,7 +72,16 @@ export default () => {
       </div>
       <div className={classes.container}>
         {
-          dates.map(date => <Cell key={date} date={date} />)
+          dates.map(date => <Cell
+            key={date}
+            date={date}
+            isPicking={isPicking}
+            setPicking={setPicking}
+            pickingRange={pickingRange}
+            setPickingRange={setPickingRange}
+            tempEndDate={tempEndDate}
+            setTempEndDate={setTempEndDate}
+          />)
         }
       </div>
     </div>
