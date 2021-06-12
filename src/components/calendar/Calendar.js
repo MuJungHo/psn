@@ -20,7 +20,8 @@ const useStyles = makeStyles({
     flex: 1
   }
 })
-export default () => {
+export default props => {
+  const { pickDateRange } = props
   const classes = useStyles()
   const dt = new Date()
   const [isPicking, setPicking] = React.useState(false)
@@ -56,9 +57,11 @@ export default () => {
       setMonth(month + 1)
     }
   }
-  // var startdate = new Date('06/06/2013');
-  // var startD = new Date('06/06/2013');
-  console.log(pickingRange)
+  React.useEffect(() => {
+    if (pickingRange.length === 2) {
+      pickDateRange(pickingRange)
+    }
+  }, [pickingRange])
   return (
     <div className={classes.root}>
       <div style={{ height: 50 }}>

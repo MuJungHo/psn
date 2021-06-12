@@ -56,6 +56,9 @@ const useStyles = makeStyles({
 export default () => {
   const classes = useStyles();
   const [isDialogOpen, setDialogOpen] = React.useState(true)
+  const pickDateRange = range => {
+    console.log(range)
+  }
   return (
     <Dialog
       open={isDialogOpen}
@@ -63,6 +66,6 @@ export default () => {
       fullScreen
       maxWidth="lg"
     >
-      <Calendar />
+      <Calendar pickDateRange={pickDateRange}/>
     </Dialog>)
 }
