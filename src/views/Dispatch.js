@@ -35,6 +35,7 @@ import Actions from '../components/Actions'
 import { getCookie } from '../utils/libs'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { DatePicker } from 'rsuite'
+import DateRangePicker from '../components/date-range-picker/DateRangePicker'
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -183,6 +184,7 @@ export default () => {
   const rowsPerPage = Math.floor((window.innerHeight - 370) / 53)
   const [dispatches, setDispatches] = React.useState([])
   const [isDispatchDialogOpen, setDispatchDialogOpen] = React.useState(false)
+  const [dateRange, setDateRange] = React.useState(['2021/6/1', '2021/6/30'])
   const { sel_udid } = useSelector(state => state.user)
   const uid = getCookie('login_uid') || 1
   const rows = [...dispatches]
@@ -290,6 +292,7 @@ export default () => {
     <div className={classes.root}>
       <Card >
         <CardContent style={{ padding: 20, display: 'flex' }}>
+          <DateRangePicker value={dateRange} onChange={e => setDateRange(e)} />
           <div className={classes.spacer} />
           <Button
             variant="contained"
@@ -299,7 +302,6 @@ export default () => {
       </Card>
       <Divider />
       <Paper className={classes.paper}>
-
         <Tabs
           value={tab}
           indicatorColor="primary"
