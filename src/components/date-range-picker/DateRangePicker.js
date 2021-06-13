@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Calendar from './Calendar'
-import Button from '../material/Button'
 const useStyles = makeStyles({
   root: {
     position: 'relative'
@@ -10,10 +9,10 @@ const useStyles = makeStyles({
     flex: 1
   },
   date_picker_container: {
-    
+
   },
   date_picker_confirm: {
-    
+
   }
 })
 export default props => {
@@ -21,7 +20,6 @@ export default props => {
   const classes = useStyles()
   const dt = new Date()
   const [isDialogOpen, setDialogOpen] = React.useState(false)
-  const [dialogPosition, setDialogPosition] = React.useState({})
   const [isPicking, setPicking] = React.useState(false)
   const [pickingRange, setPickingRange] = React.useState(value)
   const [tempEndDate, setTempEndDate] = React.useState(value[1])
@@ -29,13 +27,6 @@ export default props => {
   const [endYear, setEndYear] = React.useState(dt.getFullYear())
   const [startMonth, setStartMonth] = React.useState(dt.getMonth())
   const [endMonth, setEndMonth] = React.useState(dt.getMonth() + 1)
-  const handleSetDialogOpen = e => {
-    setDialogPosition({
-      left: e.clientX,
-      top: e.clientY
-    })
-    setDialogOpen(!isDialogOpen)
-  }
   const handleOKClick = () => {
     onChange(pickingRange)
     setDialogOpen(false)
@@ -47,17 +38,33 @@ export default props => {
   }
   React.useEffect(() => {
     if (isDialogOpen) {
+      setPickingRange(value)
       window.addEventListener('click', onDialogClose)
     }
-
     return () => { window.removeEventListener('click', onDialogClose) }
   }, [isDialogOpen])
   return (
     <div
       className={classes.root}
     >
-      <div onClick={e => handleSetDialogOpen(e)} >
-        {`${value[0]}~${value[1]}`}
+      <div style={{ display: 'flex' }}>
+        <div onClick={() => setDialogOpen(!isDialogOpen)} >
+          {
+            value.length === 2
+              ?
+              `${value[0]}~${value[1]}`
+              :
+              `請選擇日期區間`
+          }
+        </div>
+        {
+          value.length === 2
+            ?
+            <div onClick={() => onChange([])}>x</div>
+            :
+            null
+        }
+
       </div>
       <div
         className={classes.date_picker_container}

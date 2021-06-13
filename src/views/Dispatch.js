@@ -184,7 +184,7 @@ export default () => {
   const rowsPerPage = Math.floor((window.innerHeight - 370) / 53)
   const [dispatches, setDispatches] = React.useState([])
   const [isDispatchDialogOpen, setDispatchDialogOpen] = React.useState(false)
-  const [dateRange, setDateRange] = React.useState(['2021/6/1', '2021/6/30'])
+  const [dateRange, setDateRange] = React.useState([])
   const { sel_udid } = useSelector(state => state.user)
   const uid = getCookie('login_uid') || 1
   const rows = [...dispatches]
