@@ -22,7 +22,7 @@ import {
   Tab,
   Tabs
 } from '@material-ui/core'
-import Select from '../components/material/Select'
+import Select from '../components/Select'
 import InputGray from '../components/material/InputGray'
 import Arrow from "../icons/Arrow"
 import Card from '../components/material/Card'
@@ -386,30 +386,18 @@ export default () => {
         titleText={'派送排程'}
         content={<>
           <Select
-            input={<InputGray />}
-            IconComponent={Arrow}
             value={schedule}
             onChange={e => setSchedule(e.target.value)}
-            displayEmpty
-          >
-            <MenuItem value=''>{'選擇排程'}</MenuItem>
-            {
-              schedules.map(sch => <MenuItem value={sch.nsid} key={sch.nsid}>{sch.nsname}</MenuItem>)
-            }
-          </Select>
+            options={schedules}
+            emptyText={'請選擇排程'}
+          />
           <Select
-            input={<InputGray />}
-            IconComponent={Arrow}
             value={device}
             onChange={e => setDevice(e.target.value)}
-            displayEmpty
-          >
-            <MenuItem value=''>{'選擇播放器'}</MenuItem>
-            {
-              devices.map(device => <MenuItem value={device.dpid} key={device.dpid}>{device.dpname}</MenuItem>)
-            }
-          </Select>
-          <DateTimePicker value={dispatchDateTime} onChange={e => setDispatchDateTime(e)}/>
+            options={devices}
+            emptyText={'請選擇設備'}
+          />
+          <DateTimePicker value={dispatchDateTime} onChange={e => setDispatchDateTime(e)} />
         </>}
         confirmText={'派送'}
         confirm={handleDispatch}
