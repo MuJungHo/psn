@@ -20,15 +20,11 @@ export default props => {
   const classes = useStyles()
   const dt = new Date()
   const [isDialogOpen, setDialogOpen] = React.useState(false)
-  const [isPicking, setPicking] = React.useState(false)
-  const [pickingRange, setPickingRange] = React.useState(value)
-  const [tempEndDate, setTempEndDate] = React.useState(value[1])
+  const [pickingDate, setPickingDate] = React.useState('')
   const [startYear, setStartYear] = React.useState(dt.getFullYear())
-  const [endYear, setEndYear] = React.useState(dt.getFullYear())
   const [startMonth, setStartMonth] = React.useState(dt.getMonth())
-  const [endMonth, setEndMonth] = React.useState(dt.getMonth() + 1)
   const handleOKClick = () => {
-    onChange(pickingRange)
+    onChange(pickingDate)
     setDialogOpen(false)
   }
   const onDialogClose = event => {
@@ -38,7 +34,7 @@ export default props => {
   }
   React.useEffect(() => {
     if (isDialogOpen) {
-      setPickingRange(value)
+      // setPickingRange(value)
       window.addEventListener('click', onDialogClose)
     }
     return () => { window.removeEventListener('click', onDialogClose) }
@@ -49,22 +45,8 @@ export default props => {
     >
       <div style={{ display: 'flex' }}>
         <div onClick={() => setDialogOpen(!isDialogOpen)} >
-          {
-            value.length === 2
-              ?
-              `${value[0]}~${value[1]}`
-              :
-              `請選擇日期區間`
-          }
+          {value}
         </div>
-        {
-          value.length === 2
-            ?
-            <div onClick={() => onChange([])}>x</div>
-            :
-            null
-        }
-
       </div>
       <div
         className={classes.date_picker_container}
@@ -79,34 +61,17 @@ export default props => {
           backgroundColor: '#fff'
         }}>
         <Calendar
-          isPickingRange
-          isPicking={isPicking}
-          setPicking={setPicking}
-          tempEndDate={tempEndDate}
-          setTempEndDate={setTempEndDate}
-          pickingRange={pickingRange}
-          setPickingRange={setPickingRange}
           year={startYear}
           setYear={setStartYear}
           month={startMonth}
           setMonth={setStartMonth}
-        />
-        <Calendar
-          isPickingRange
-          isPicking={isPicking}
-          setPicking={setPicking}
-          tempEndDate={tempEndDate}
-          setTempEndDate={setTempEndDate}
-          pickingRange={pickingRange}
-          setPickingRange={setPickingRange}
-          year={endYear}
-          setYear={setEndYear}
-          month={endMonth}
-          setMonth={setEndMonth}
+          pickingDate={pickingDate}
+          setPickingDate={setPickingDate}
         />
         <button
           className={classes.date_picker_confirm}
-          onClick={handleOKClick}>
+          onClick={handleOKClick}
+        >
           {'OK'}
         </button>
       </div>

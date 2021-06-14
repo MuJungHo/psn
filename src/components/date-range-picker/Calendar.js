@@ -4,6 +4,7 @@ import Cell from './Cell'
 import ActionButton from '../material/ActionButton'
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { Paper } from '@material-ui/core';
 const useStyles = makeStyles({
   date_picker_root: {
     display: 'flex',
@@ -32,15 +33,17 @@ export default props => {
     month,
     setYear,
     setMonth,
+    isPickingRange,
     isPicking,
     setPicking,
     tempEndDate,
     setTempEndDate,
     pickingRange,
-    setPickingRange
+    setPickingRange,
+    pickingDate,
+    setPickingDate
   } = props
   const classes = useStyles()
-  const dt = new Date()
   const currMonthFirstDay = new Date(year, month, 1).getDay()
   const currMonthDays = new Date(year, (month + 1), 0).getDate()
   const lastMonthDays = new Date(year, month, 0).getDate()
@@ -84,11 +87,33 @@ export default props => {
       setMonth(month + 1)
     }
   }
+
+  const handleClickCell = value => {
+    if (isPickingRange) {
+      if (isPicking) {
+        setPickingRange([...pickingRange, value])
+      } else {
+        setPickingRange([value])
+        setTempEndDate(value)
+      }
+      setPicking(!isPicking)
+    } else {
+      setPickingDate(value)
+    }
+  }
+
+  const handleHoverCell = value => {
+    if (isPickingRange) {
+      if (isPicking) {
+        setTempEndDate(value)
+      }
+    }
+  }
   return (
     <div className={classes.date_picker_root}>
       <div style={{ height: 50 }} className={classes.date_picker_actions}>
         <ActionButton onClick={handleLowerMonth}>
-          <KeyboardArrowLeftIcon/>
+          <KeyboardArrowLeftIcon />
         </ActionButton>
         <ActionButton onClick={handleHigherMonth}>
           <ChevronRightIcon />
@@ -97,16 +122,23 @@ export default props => {
       </div>
       <div className={classes.container}>
         {
-          dates.map(date => <Cell
-            key={date.value}
-            date={date}
-            isPicking={isPicking}
-            setPicking={setPicking}
-            pickingRange={pickingRange}
-            setPickingRange={setPickingRange}
-            tempEndDate={tempEndDate}
-            setTempEndDate={setTempEndDate}
-          />)
+          dates.map(date => {
+            const isCellActive = isPickingRange
+              ?
+              (
+                (new Date(date.value) >= new Date(pickingRange[0]) && new Date(date.value) <= new Date(tempEndDate))
+                || (new Date(date.value) <= new Date(pickingRange[0]) && new Date(date.value) >= new Date(tempEndDate))
+              )
+              : date.value === pickingDate
+            
+            return <Cell
+              key={date.value}
+              date={date}
+              isCellActive={isCellActive}
+              handleClickCell={() => handleClickCell(date.value)}
+              handleHoverCell={() => handleHoverCell(date.value)}
+            />
+          })
         }
       </div>
     </div>

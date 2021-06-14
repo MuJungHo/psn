@@ -11,33 +11,11 @@ const useStyles = makeStyles({
 export default props => {
   const {
     date,
-    isPicking,
-    setPicking,
-    pickingRange,
-    setPickingRange,
-    tempEndDate,
-    setTempEndDate
+    isCellActive,
+    handleClickCell,
+    handleHoverCell
   } = props
   const classes = useStyles()
-  const isCellActive =
-    (
-      (new Date(date.value) >= new Date(pickingRange[0]) && new Date(date.value) <= new Date(tempEndDate))
-      || (new Date(date.value) <= new Date(pickingRange[0]) && new Date(date.value) >= new Date(tempEndDate))
-    )
-  const handleClickCell = () => {
-    if (isPicking) {
-      setPickingRange([...pickingRange, date.value])
-    } else {
-      setPickingRange([date.value])
-      setTempEndDate(date.value)
-    }
-    setPicking(!isPicking)
-  }
-  const handleHoverCell = () => {
-    if (isPicking) {
-      setTempEndDate(date.value)
-    }
-  }
   return (
     <div
       className={classes.date_picker_cell}

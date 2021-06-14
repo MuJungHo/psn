@@ -36,6 +36,7 @@ import { getCookie } from '../utils/libs'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { DatePicker } from 'rsuite'
 import DateRangePicker from '../components/date-range-picker/DateRangePicker'
+import DateTimePicker from '../components/date-range-picker/DateTimePicker'
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -177,8 +178,7 @@ export default () => {
   const [device, setDevice] = React.useState('')
   const [schedule, setSchedule] = React.useState('')
   const [schedules, setSchedules] = React.useState([])
-  const [dispatchTime, setDispatchTime] = React.useState(0)
-  const [dispatchDate, setDispatchDate] = React.useState(new Date())
+  const [dispatchDateTime, setDispatchDateTime] = React.useState('2021/6/7')
   const [page, setPage] = React.useState(1);
   const [tab, setTab] = React.useState(0)
   const rowsPerPage = Math.floor((window.innerHeight - 370) / 53)
@@ -273,8 +273,8 @@ export default () => {
     setPage(e.target.value)
   }
   const handleDispatch = () => {
-    var date = moment(dispatchDate).format('YYYYMMDD')
-    var time = moment(dispatchTime).format('HHmm')
+    var date = moment(dispatchDateTime).format('YYYYMMDD')
+    var time = moment(dispatchDateTime).format('HHmm')
     dispatch_sch({
       dph_time: `${date}${time}`,
       start_time: '000101010000',
@@ -409,8 +409,7 @@ export default () => {
               devices.map(device => <MenuItem value={device.dpid} key={device.dpid}>{device.dpname}</MenuItem>)
             }
           </Select>
-          <DatePicker value={dispatchDate} format="YYYY-MM-DD" onChange={e => setDispatchDate(e)} />
-          <DatePicker format="HH:mm" onChange={e => setDispatchTime(e)} />
+          <DateTimePicker value={dispatchDateTime} onChange={e => setDispatchDateTime(e)}/>
         </>}
         confirmText={'派送'}
         confirm={handleDispatch}
