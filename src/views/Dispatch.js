@@ -388,12 +388,16 @@ export default () => {
             onChange={e => setSchedule(e.target.value)}
             options={schedules}
             emptyText={'請選擇排程'}
+            val="nsid"
+            name="nsname"
           />
           <Select
             value={device}
             onChange={e => setDevice(e.target.value)}
             options={devices}
             emptyText={'請選擇設備'}
+            val="dpid"
+            name="dpname"
           />
           <DateTimePicker value={dispatchDateTime} onChange={e => setDispatchDateTime(e)} />
         </>}
