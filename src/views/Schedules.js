@@ -188,7 +188,10 @@ export default () => {
                 {schedule.nsname}
                 <div style={{ flex: 1 }} />
                 <Actions items={[
-                  { icon: <AddToQueueIcon />, name: '派送', onClick: () => handleSetDispatchDialogOpen(schedule.nsid) }]} />
+                  { name: '派送', onClick: () => handleSetDispatchDialogOpen(schedule.nsid) },
+                  { name: '詳細資料', onClick: () => history.push(`/newui/schedule/${schedule.nsid}`) },
+                ]}
+                />
               </div>
               <CardMedia
                 className={classes.media}

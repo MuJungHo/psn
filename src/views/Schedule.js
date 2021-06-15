@@ -1,10 +1,12 @@
 import React from 'react'
+import { useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Paper from '../components/material/Paper'
 import Dialog from '../components/material/Dialog'
 import Calendar from '../components/calendar/Calendar'
+import Button from '../components/material/Button'
 
 const useStyles = makeStyles({
   root: {
@@ -55,6 +57,7 @@ const useStyles = makeStyles({
 })
 export default () => {
   const classes = useStyles();
+  const history = useHistory();
   const [isDialogOpen, setDialogOpen] = React.useState(true)
   const pickDateRange = range => {
     console.log(range)
@@ -66,6 +69,15 @@ export default () => {
       fullScreen
       maxWidth="lg"
     >
-      <Calendar pickDateRange={pickDateRange}/>
+      <div>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => history.push('/newui/schedules')}
+      >
+        {'返回'}
+      </Button>
+      </div>
+      <Calendar pickDateRange={pickDateRange} />
     </Dialog>)
 }

@@ -11,7 +11,6 @@ import {
   TableRow,
   TableSortLabel,
   Divider,
-  Button,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -35,6 +34,7 @@ import ConfirmDialog from '../components/ConfirmDialog'
 import { DatePicker } from 'rsuite'
 import DateRangePicker from '../components/date-range-picker/DateRangePicker'
 import DateTimePicker from '../components/date-range-picker/DateTimePicker'
+import Button from '../components/material/Button'
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -307,7 +307,7 @@ export default () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => setDispatchDialogOpen(true)}>新增派送</Button>
+            onClick={() => setDispatchDialogOpen(true)}>{'新增派送'}</Button>
         </CardContent>
       </Card>
       <Divider />

@@ -239,10 +239,12 @@ export default () => {
                       <TableCell align="left">{row.udname}</TableCell>
                       <TableCell align="left">{row.dpver}</TableCell>
                       <TableCell align="left">{row.dpos}</TableCell>
-                      <TableCell align="left"><Actions items={[
-                        { name: '調整音量', onClick: () => { } },
-                        { name: '詳細資料', onClick: () => history.push(`/newui/device/${row.dpid}`) },
-                      ]} /></TableCell>
+                      <TableCell align="left">
+                        <Actions items={[
+                          { name: '調整音量', onClick: () => { } },
+                          { name: '詳細資料', onClick: () => history.push(`/newui/device/${row.dpid}`) },
+                        ]} />
+                      </TableCell>
                     </TableRow>
                   );
                 })}

@@ -1,10 +1,10 @@
 import React from 'react'
+import { useHistory } from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
 import { getScList } from '../utils/apis'
-import { useHistory } from "react-router-dom"
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Actions from '../components/Actions'
@@ -82,6 +82,7 @@ const useStyles = makeStyles({
 })
 export default () => {
   const classes = useStyles()
+  const history = useHistory();
   const [programs, setPrograms] = React.useState([])
   const [param, setParam] = React.useState({})
   const { sel_udid } = useSelector(state => state.user)
@@ -145,7 +146,15 @@ export default () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleSaveDailySch}>save</Button>
+            onClick={handleSaveDailySch}>
+            {'save'}
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => history.push('/newui/dailys')}>
+            {'back'}
+          </Button>
         </CardContent>
       </Card>
       <div className={classes.container}>
