@@ -89,21 +89,33 @@ export default () => {
       .then((response) => {
         convert.parseString(response.data, { explicitArray: false }, (err, result) => {
           if (!err) {
-            var schedules = result.root.nschedule.map(schedule => schedule.$)
-            setSchedules([...schedules])
+            var tempSchedules = []
+            if (result.root.nschedule === undefined) return tempSchedules = []
+            if (Object.keys(result.root.nschedule)[0] === '0') {
+              tempSchedules = [...result.root.nschedule.map(nsch => ({ ...nsch.$ }))]
+            } else {
+              tempSchedules = [{ ...result.root.nschedule.$ }]
+            }
+            setSchedules([...tempSchedules])
           }
         })
-        getdplist()
+        getdplist({ sel_udid })
           .then(response => {
-            convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+            convert.parseString(response.data, { explicitArray: false }, (err, dpResult) => {
               if (!err) {
-                var tempDevices = result.root.dp_info.map(dp => ({ dpid: dp.dpid, dpname: dp.dpname }))
-                setDevices([...tempDevices])
+                var tempDevices = []
+                if (dpResult.root.dp_info === undefined) return tempDevices = []
+                if (Object.keys(dpResult.root.dp_info)[0] === '0') {
+                  tempDevices = [...dpResult.root.dp_info]
+                } else {
+                  tempDevices = [{ ...dpResult.root.dp_info }]
+                }
+                setDevices([...tempDevices].map(dp => ({ dpid: dp.dpid, dpname: dp.dpname })))
               }
             })
           })
       })
-  }, [])
+  }, [sel_udid])
   React.useEffect(() => {
     if (schDialogOpen) {
       getScList({ sel_udid, sortType: 0 })

@@ -22,6 +22,7 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 import { getPgLstByUdid, getScList } from '../utils/apis'
+import { v4 as uuid } from 'uuid'
 const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
 const psn = baseURL + '/psn'
 const mf = baseURL + '/mf'
@@ -89,9 +90,9 @@ const DailyDetailDialog = props => {
         if (!err) {
           if (result.root.pg_info === undefined) return setPrograms([])
           if (Object.keys(result.root.pg_info)[0] === '0') {
-            setPrograms([...result.root.pg_info.map(program => ({ ...program }))])
+            setPrograms([...result.root.pg_info.map(program => ({ ...program, uuid: uuid() }))])
           } else {
-            setPrograms([{ ...result.root.pg_info }])
+            setPrograms([{ ...result.root.pg_info, uuid: uuid() }])
           }
         }
       })
@@ -174,9 +175,15 @@ export default () => {
       .then((response) => {
         convert.parseString(response.data, { explicitArray: false }, (err, result) => {
           if (!err) {
-            var dailys = result.root.schedule.map(daily => daily.$)
-            dailys = dailys.filter(daily => daily.scid !== "0")
-            setDailys([...dailys])
+            var tempDailys = []
+            if (result.root.schedule === undefined) return tempDailys = []
+            if (Object.keys(result.root.schedule)[0] === '0') {
+              tempDailys = [...result.root.schedule.map(daily => ({ ...daily.$ }))]
+            } else {
+              tempDailys = [{ ...result.root.schedule.$ }]
+            }
+            tempDailys = tempDailys.filter(daily => daily.scid !== "0")
+            setDailys([...tempDailys])
           }
         })
       })
@@ -188,7 +195,7 @@ export default () => {
         {
           dailys && dailys.map((daily, key) =>
             <Card
-              key={key}
+              key={daily.scid}
               className={classes.card}
               onClick={() => history.push(`/newui/daily/${daily.scid}`)}
               style={{

@@ -153,28 +153,35 @@ export default () => {
   const rowsPerPage = Math.floor((window.innerHeight - 370) / 53)
   const [devices, setDevices] = React.useState([])
   const history = useHistory();
+  const { sel_udid } = useSelector(state => state.user)
 
 
   React.useEffect(() => {
-    getdplist({ sel_udid: 0 })
-      .then((response) => {
-        convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+    getdplist({ sel_udid })
+      .then(dpRes => {
+        var tempDpinfo = []
+        convert.parseString(dpRes.data, { explicitArray: false }, (err, dpResult) => {
           if (!err) {
-            var tempDpinfo = [...result.root.dp_info]
-            GetAllDp()
-              .then((response) => {
-                convert.parseString(response.data, { explicitArray: false }, (err, result) => {
-                  tempDpinfo = tempDpinfo.map(dp_info => ({
-                    ...result.root.dpinfo.find(dpinfo => dpinfo.dpid === dp_info.dpid),
-                    ...dp_info
-                  }))
-                })
-                setRows([...tempDpinfo])
-              })
+            if (dpResult.root.dp_info === undefined) return tempDpinfo = []
+            if (Object.keys(dpResult.root.dp_info)[0] === '0') {
+              tempDpinfo = [...dpResult.root.dp_info]
+            } else {
+              tempDpinfo = [{ ...dpResult.root.dp_info }]
+            }
           }
         })
+        GetAllDp()
+          .then(response => {
+            convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+              tempDpinfo = tempDpinfo.map(dp_info => ({
+                ...result.root.dpinfo.find(dpinfo => dpinfo.dpid === dp_info.dpid),
+                ...dp_info
+              }))
+            })
+            setRows([...tempDpinfo])
+          })
       })
-  }, [])
+  }, [sel_udid])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
