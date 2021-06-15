@@ -35,6 +35,7 @@ import { DatePicker } from 'rsuite'
 import DateRangePicker from '../components/date-range-picker/DateRangePicker'
 import DateTimePicker from '../components/date-range-picker/DateTimePicker'
 import Button from '../components/material/Button'
+import Add from '@material-ui/icons/Add'
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -307,7 +308,10 @@ export default () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => setDispatchDialogOpen(true)}>{'新增派送'}</Button>
+            onClick={() => setDispatchDialogOpen(true)}>
+            <Add />
+            {'新增派送'}
+          </Button>
         </CardContent>
       </Card>
       <Divider />

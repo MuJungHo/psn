@@ -11,18 +11,19 @@ import Actions from '../components/Actions'
 import {
   CardContent,
   CardMedia,
-  MenuItem,
+  Divider,
 } from '@material-ui/core'
 
 import ConfirmDialog from '../components/ConfirmDialog'
 import AddToQueueIcon from '@material-ui/icons/AddToQueue';
 import { DatePicker } from 'rsuite'
+import Button from '../components/material/Button'
+import Add from '@material-ui/icons/Add'
 const useStyles = makeStyles({
   root: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    paddingLeft: 20,
   },
   action: {
     marginTop: 0,
@@ -41,7 +42,8 @@ const useStyles = makeStyles({
   container: {
     display: 'flex',
     paddingTop: '1.5rem',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    paddingLeft: 20,
   },
   card: {
     marginRight: '1.5%',
@@ -168,6 +170,19 @@ export default () => {
   }
   return (
     <div className={classes.root}>
+      <Card >
+        <CardContent style={{ padding: 20, display: 'flex' }}>
+          <div className={classes.spacer} />
+          <Button
+            onClick={() => { }}
+            color='primary'
+            variant="contained">
+            <Add />
+            {'新增排程'}
+          </Button>
+        </CardContent>
+      </Card>
+      <Divider />
       <div className={classes.container}>
         {
           schedules && schedules.map((schedule, key) =>

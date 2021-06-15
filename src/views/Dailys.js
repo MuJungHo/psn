@@ -23,6 +23,7 @@ import {
 } from '@material-ui/core'
 import { getPgLstByUdid, getScList } from '../utils/apis'
 import { v4 as uuid } from 'uuid'
+import Add from '@material-ui/icons/Add'
 const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
 const psn = baseURL + '/psn'
 const mf = baseURL + '/mf'
@@ -32,7 +33,6 @@ const useStyles = makeStyles({
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    paddingLeft: 20,
   },
   action: {
     marginTop: 0,
@@ -51,7 +51,8 @@ const useStyles = makeStyles({
   container: {
     display: 'flex',
     paddingTop: '1.5rem',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    paddingLeft: 20,
   },
   card: {
     marginRight: '1.5%',
@@ -191,6 +192,19 @@ export default () => {
 
   return (
     <div className={classes.root}>
+      <Card >
+        <CardContent style={{ padding: 20, display: 'flex' }}>
+          <div className={classes.spacer} />
+          <Button
+            onClick={() => { }}
+            color='primary'
+            variant="contained">
+            <Add />
+            {'新增單日節目表'}
+          </Button>
+        </CardContent>
+      </Card>
+      <Divider />
       <div className={classes.container}>
         {
           dailys && dailys.map((daily, key) =>

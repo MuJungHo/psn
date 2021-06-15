@@ -13,6 +13,7 @@ import {
   TableSortLabel,
   Divider,
   Button,
+  CardContent
 } from '@material-ui/core'
 import Card from '../components/material/Card'
 import Paper from '../components/material/Paper'
@@ -21,6 +22,7 @@ import convert from 'xml2js'
 import moment from 'moment'
 import { getdplist, GetAllDp } from '../utils/apis'
 import Actions from '../components/Actions'
+import TextField from '../components/material/TextField'
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -102,20 +104,13 @@ function EnhancedTableHead(props) {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    padding: '0 20px 20px 20px',
   },
   paper: {
     padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
-    marginTop: 20,
-    height: 'calc(100vh - 130px)'
-  },
-  cardContainer: {
-    display: 'flex',
-    '& > *:not(:first-child)': {
-      marginLeft: 20
-    }
+    margin: 20,
+    height: 'calc(100vh - 195px)',
   },
   card: {
     flex: 1
@@ -205,6 +200,19 @@ export default () => {
 
   return (
     <div className={classes.root}>
+      <Card >
+        <CardContent style={{ padding: 20, display: 'flex' }}>
+
+          <TextField
+            type="text"
+            variant="outlined"
+            value={''}
+            onChange={() => { }}
+          />
+          <div className={classes.spacer} />
+        </CardContent>
+      </Card>
+      <Divider />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar rows={rows} />
         <TableContainer>
