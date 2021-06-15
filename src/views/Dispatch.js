@@ -23,8 +23,6 @@ import {
   Tabs
 } from '@material-ui/core'
 import Select from '../components/Select'
-import InputGray from '../components/material/InputGray'
-import Arrow from "../icons/Arrow"
 import Card from '../components/material/Card'
 import Paper from '../components/material/Paper'
 // import Pagination from '../components/Pagination'

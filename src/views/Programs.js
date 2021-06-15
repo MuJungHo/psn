@@ -11,15 +11,10 @@ import Add from '@material-ui/icons/Add'
 import {
   CardContent,
   CardMedia,
-  CircularProgress,
-  MenuItem,
-  Divider,
 } from '@material-ui/core'
 
 import ConfirmDialog from '../components/ConfirmDialog'
-import Select from '../components/material/Select'
-import InputGray from '../components/material/InputGray'
-import Arrow from "../icons/Arrow"
+import Select from '../components/Select'
 import { getCookie } from '../utils/libs'
 const useStyles = makeStyles({
   root: {
@@ -133,17 +128,13 @@ export default () => {
       <Card >
         <CardContent style={{ padding: 20, display: 'flex' }}>
           <Select
-            input={<InputGray />}
-            IconComponent={Arrow}
             value={filters.ios}
             onChange={e => setFilters({ ...filters, ios: e.target.value })}
-            displayEmpty
-          >
-            <MenuItem value={''} >{'全部節目種類'}</MenuItem>
-            {
-              programTypes.map(pgType => <MenuItem value={pgType.value} key={pgType.value}>{pgType.name}</MenuItem>)
-            }
-          </Select>
+            emptyText={'全部節目種類'}
+            options={programTypes}
+            val="value"
+            name="name"
+          />
           <div className={classes.spacer} />
           <Actions items={[
             { name: 'Windows', onClick: () => history.push(`/newui/program/0`) },

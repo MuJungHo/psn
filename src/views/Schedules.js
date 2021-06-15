@@ -4,9 +4,7 @@ import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
 import { getNsList, dispatch_sch, getdplist, loadNs, getScList, saveNs } from '../utils/apis'
-import Select from '../components/material/Select'
-import InputGray from '../components/material/InputGray'
-import Arrow from "../icons/Arrow"
+import Select from '../components/Select'
 import { useHistory } from "react-router-dom"
 import { useSelector } from 'react-redux'
 import Actions from '../components/Actions'
@@ -197,21 +195,14 @@ export default () => {
         setDialogOpen={setSchDialogOpen}
         titleText={'設定預設節目表'}
         content={
-          <>
-            <Select
-              input={<InputGray />}
-              IconComponent={Arrow}
-              value={params.default && params.default.scid || ''}
-              onChange={e => setDevice(e.target.value)}
-              displayEmpty
-            >
-              {console.log(params)}
-              <MenuItem value=''>{'選擇單日節目表'}</MenuItem>
-              {
-                dailys.map(daily => <MenuItem value={daily.scid} key={daily.scname}>{daily.scname}</MenuItem>)
-              }
-            </Select>
-          </>
+          <Select
+            value={params.default && params.default.scid || ''}
+            onChange={e => setDevice(e.target.value)}
+            emptyText={'選擇單日節目表'}
+            options={dailys}
+            val="scid"
+            name="scname"
+          />
         }
         confirmText={'確認'}
         confirm={handleSaveSch}
@@ -222,20 +213,6 @@ export default () => {
         titleText={'派送排程'}
         content={
           <>
-            <Select
-              input={<InputGray />}
-              IconComponent={Arrow}
-              value={device}
-              onChange={e => setDevice(e.target.value)}
-              displayEmpty
-            >
-              <MenuItem value=''>{'選擇播放器'}</MenuItem>
-              {
-                devices.map(device => <MenuItem value={device.dpid} key={device.dpid}>{device.dpname}</MenuItem>)
-              }
-            </Select>
-            <DatePicker value={dispatchDate} format="YYYY-MM-DD" onChange={e => setDispatchDate(e)} />
-            <DatePicker format="HH:mm" onChange={e => setDispatchTime(e)} />
           </>
         }
         confirmText={'確認'}

@@ -50,11 +50,13 @@ const useStyles = makeStyles(theme => ({
     }
   },
 }))
-export default ({ value, onChange, options, style, emptyText }) => {
-  console.log(options)
+export default ({ value, onChange, options, style, emptyText, name, val }) => {
   return (
     <Select
       style={{ ...style }}
+      SelectDisplayProps={{
+        style: { fontSize: '1rem' }
+      }}
       input={<InputGray />}
       IconComponent={Arrow}
       value={value}
@@ -64,7 +66,7 @@ export default ({ value, onChange, options, style, emptyText }) => {
       {emptyText ? <MenuItem value={''}>{emptyText}</MenuItem> : null}
 
       {
-        options.map(option => <MenuItem value={option.value} key={option.key}>{option.name}</MenuItem>)
+        options.map(option => <MenuItem value={option[val]} key={option[val]}>{option[name]}</MenuItem>)
       }
     </Select>
   )

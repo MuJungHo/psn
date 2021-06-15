@@ -21,12 +21,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import RouteList from './RouteList'
 import ChildMenuList from './ChildMenuList'
-import Select from '../components/material/Select'
-import InputGray from '../components/material/InputGray'
-import Arrow from "../icons/Arrow"
-import {
-  MenuItem,
-} from '@material-ui/core'
+import Select from '../components/Select'
 import { getCookie } from '../utils/libs'
 import { getscriptlist } from '../utils/apis'
 import convert from 'xml2js'
@@ -154,16 +149,14 @@ export default function MiniDrawer() {
         <Divider style={{ background: '#393b4c' }} />
         <p style={{ color: '#a0a4ad', paddingLeft: 20, marginTop: 20 }}>{`品牌ID: ${brand}`}</p>
         <Select
-          input={<InputGray />}
-          IconComponent={Arrow}
           value={sel_udid}
           onChange={handleChangeSelUdid}
           style={{ margin: 20 }}
-        >
-          {
-            stores.map(store => <MenuItem value={store.udid} key={store.udid}>{store.udname}</MenuItem>)
-          }
-        </Select>
+          options={stores}
+          name="udname"
+          val="udid"
+        />
+
         {status ? <RouteList /> : <ChildMenuList />}
       </Drawer>
     </div>

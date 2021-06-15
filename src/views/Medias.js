@@ -11,17 +11,10 @@ import Add from '@material-ui/icons/Add'
 import {
   CardContent,
   CardMedia,
-  CircularProgress,
-  MenuItem,
   Divider,
 } from '@material-ui/core'
 
-import Select from '../components/material/Select'
-import InputGray from '../components/material/InputGray'
-import Arrow from "../icons/Arrow"
-import DescriptionIcon from '@material-ui/icons/Description';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import CodeIcon from '@material-ui/icons/Code';
+import Select from '../components/Select'
 const useStyles = makeStyles({
   root: {
     width: '100%',
@@ -116,17 +109,13 @@ export default () => {
       <Card >
         <CardContent style={{ padding: 20, display: 'flex' }}>
           <Select
-            input={<InputGray />}
-            IconComponent={Arrow}
             value={filters.mtype}
             onChange={e => setFilters({ ...filters, mtype: e.target.value })}
-            displayEmpty
-          >
-            <MenuItem value={''} >{'全部媒體種類'}</MenuItem>
-            {
-              mediaTypes.map(mtype => <MenuItem value={mtype.value} key={mtype.value}>{mtype.name}</MenuItem>)
-            }
-          </Select>
+            emptyText={'全部媒體種類'}
+            options={mediaTypes}
+            val="value"
+            name="name"
+          />
           <div className={classes.spacer} />
           <Actions items={[
             { name: '上傳檔案', onClick: () => { } },
