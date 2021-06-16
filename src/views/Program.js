@@ -37,7 +37,7 @@ export default () => {
   React.useEffect(() => {
     getPgInfo({ pgid, uid })
       .then(response => {
-        convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+        convert.parseString(response.data, { explicitArray: false }, async (err, result) => {
           if (!err) {
             var tempZoom = result.root.pginfo.w >= result.root.pginfo.h
               ? space.width / result.root.pginfo.w
@@ -80,71 +80,46 @@ export default () => {
                 })
               }
             }
-            getPgPreviewInfoFromEdit({ preview_pgid_tmp }).then(response => {
-              convert.parseString(response.data, { explicitArray: false }, async (err, result) => {
-                if (!err) {
-                  tempLayers = tempLayers.map(layer => {
-                    var layerTemp = {}
-                    if (result.root.partitions.partition) {
-                      if (Object.keys(result.root.partitions.partition)[0] === '$') {
-                        if (layer.ptid === result.root.partitions.partition.$.ptid) layerTemp = {
-                          mtype: result.root.partitions.partition.$.type || '',
-                          argv: result.root.partitions.partition.$.argv || '',
-                          file: result.root.partitions.partition.$.file || '',
-                          time: result.root.partitions.partition.$.time || '',
-                        }
-                      }
-                      else {
-                        var layerTemps = result.root.partitions.partition.map(layer => layer.$)
-                        layerTemp = { ...layerTemps.find(l => l.ptid == layer.ptid) }
-                      }
-                    }
-                    return {
-                      ...layerTemp,
-                      ...layer,
-                    }
-                  })
-                  var getPgctInfos = tempLayers.map(layer => getPgctInfo({ pgid, pgid_tmp: preview_pgid_tmp, ptid: layer.ptid, mtype: layer.mtype }))
 
-                  await Promise.all(getPgctInfos).then(resXMLs => {
-                    setLoading(false)
-                    var mappingPgctInfos = resXMLs.map(xml => {
-                      var pgctInfo = {}
-                      convert.parseString(xml.data, { explicitArray: false }, (err, result) => {
-                        if (!err) {
-                          pgctInfo = result.root
-                        }
-                      })
-                      return pgctInfo
-                    })
-                    tempLayers = tempLayers.map(layer => {
-                      var tempLayer = mappingPgctInfos.find(pgct => pgct.ptid === layer.ptid)
-                      var layerInfos = []
-                      if (tempLayer.pgct_info) {
-                        if (Object.keys(tempLayer.pgct_info)[0] === '0') {
+            var getPgctInfos = tempLayers.map(layer => getPgctInfo({ pgid, pgid_tmp: preview_pgid_tmp, ptid: layer.ptid, mtype: layer.mtype }))
 
-                          var tempLayerPgctInfos = tempLayer.pgct_info.filter(info => info.mid !== '0')
-                          layerInfos = [...tempLayerPgctInfos.map(pgct => ({ ...pgct, uuid: uuid(), thumbnail_mid: `../mf/_preview/${pgct.mname.split('.')[0]}.jpg` }))]
-                        } else {
-                          layerInfos = [{ ...tempLayer.pgct_info, uuid: uuid(), thumbnail_mid: `../mf/_preview/${tempLayer.pgct_info.mname.split('.')[0]}.jpg` }]
-                        }
-                      }
-                      //後端bug，待釐清
-                      if (layer.mtype === 'btn' && layerInfos.length > 2) {
-                        layerInfos = layerInfos.filter(layer => layer.mid !== '0')
-                      }
+            await Promise.all(getPgctInfos).then(resXMLs => {
+              setLoading(false)
+              var mappingPgctInfos = resXMLs.map(xml => {
+                var pgctInfo = {}
+                convert.parseString(xml.data, { explicitArray: false }, (err, result) => {
+                  if (!err) {
+                    pgctInfo = result.root
+                  }
+                })
+                return pgctInfo
+              })
+              tempLayers = tempLayers.map(layer => {
+                var tempLayer = mappingPgctInfos.find(pgct => pgct.ptid === layer.ptid)
+                var layerInfos = []
+                if (tempLayer.pgct_info) {
+                  if (Object.keys(tempLayer.pgct_info)[0] === '0') {
 
-                      return {
-                        ...layer,
-                        layerInfos
-                      }
-                    })
-                  })
-                  setLayers([...tempLayers])
-                  console.log([...tempLayers])
+                    var tempLayerPgctInfos = tempLayer.pgct_info.filter(info => info.mid !== '0')
+                    layerInfos = [...tempLayerPgctInfos.map(pgct => ({ ...pgct, uuid: uuid(), thumbnail_mid: `../mf/_preview/${pgct.mname.split('.')[0]}.jpg` }))]
+                  } else {
+                    layerInfos = [{ ...tempLayer.pgct_info, uuid: uuid(), thumbnail_mid: `../mf/_preview/${tempLayer.pgct_info.mname.split('.')[0]}.jpg` }]
+                  }
+                }
+                //後端bug，待釐清
+                if (layer.mtype === 'btn' && layerInfos.length > 2) {
+                  layerInfos = layerInfos.filter(layer => layer.mid !== '0')
+                }
+
+                return {
+                  ...layer,
+                  file: layerInfos.length > 0 ? layerInfos[0].mname : '',
+                  layerInfos
                 }
               })
             })
+            setLayers([...tempLayers])
+            console.log([...tempLayers])
           }
         })
       })

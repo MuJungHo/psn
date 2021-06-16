@@ -139,13 +139,23 @@ export default ({
   }
   const filePath = () => {
     if (layer.mtype === 'btn') {
-      console.log(layer)
       return layer.btn_bg_mid === '0' || layer.btn_bg_mid === ''
         ? `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}_0.png`
         : `${mf}/_preview/${layer.btn_bg_mname.split('.')[0]}.jpg`
     }
     if (layer.file) {
-      return `${mf}/_preview/${layer.file.split('.')[0]}.jpg`
+      if (layer.mtype === 'label' && layer.mdesc) {
+        return `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}.png`
+      }
+      if (layer.mtype === 'youtube') {
+        return `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}.jpg`
+      }
+      if (layer.mtype === 'stxt' || layer.mtype === 'board' || layer.mtype === 'time') {
+        return `${mf}/pg/temp/${program.tempFolderId}/${program.targetFolder}_${layer.ptid}.png`
+      }
+      return layer.mtype === 'pdf' || layer.mtype === 'ppt' || layer.mtype === 'stream' || layer.mtype === 'url'
+        ? `${psn}/images/preview/ext-${layer.mtype}.png`
+        : `${mf}/_preview/${layer.file.split('.')[0]}.jpg`
     } else {
       return `${psn}/images/module/ico-${{
         'image': 'pix',
@@ -155,7 +165,10 @@ export default ({
         'time': 'clock',
         'pdf': 'pdf',
         'ppt': 'ppt',
-        'youtube': 'youtube'
+        'youtube': 'youtube',
+        'versatile': 'combo',
+        'board': 'board',
+        'stxt': 'ticker'
       }[layer.mtype]}.svg`
     }
   }

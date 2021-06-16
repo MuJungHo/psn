@@ -54,12 +54,14 @@ const LayerTypePicker = props => {
   const layerTypes = [
     { image: 'pix', mtype: 'image' },
     { image: 'film', mtype: 'video' },
+    { image: 'youtube', mtype: 'youtube' },
     { image: 'stream', mtype: 'stream' },
     { image: 'ie', mtype: 'url' },
-    { image: 'clock', mtype: 'time' },
     { image: 'pdf', mtype: 'pdf' },
     { image: 'ppt', mtype: 'ppt' },
-    { image: 'youtube', mtype: 'youtube' }
+    { image: 'ticker', mtype: 'stxt' },
+    { image: 'board', mtype: 'board' },
+    { image: 'combo', mtype: 'versatile' }
   ]
   const doAddLayer = mtype => {
 
