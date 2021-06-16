@@ -88,10 +88,10 @@ export default () => {
                     if (result.root.partitions.partition) {
                       if (Object.keys(result.root.partitions.partition)[0] === '$') {
                         if (layer.ptid === result.root.partitions.partition.$.ptid) layerTemp = {
-                          mtype: result.root.partitions.partition.$.type,
-                          argv: result.root.partitions.partition.$.argv,
-                          file: result.root.partitions.partition.$.file,
-                          time: result.root.partitions.partition.$.time,
+                          mtype: result.root.partitions.partition.$.type || '',
+                          argv: result.root.partitions.partition.$.argv || '',
+                          file: result.root.partitions.partition.$.file || '',
+                          time: result.root.partitions.partition.$.time || '',
                         }
                       }
                       else {
@@ -122,7 +122,9 @@ export default () => {
                       var layerInfos = []
                       if (tempLayer.pgct_info) {
                         if (Object.keys(tempLayer.pgct_info)[0] === '0') {
-                          layerInfos = [...tempLayer.pgct_info.map(pgct => ({ ...pgct, uuid: uuid(), thumbnail_mid: `../mf/_preview/${pgct.mname.split('.')[0]}.jpg` }))]
+
+                          var tempLayerPgctInfos = tempLayer.pgct_info.filter(info => info.mid !== '0')
+                          layerInfos = [...tempLayerPgctInfos.map(pgct => ({ ...pgct, uuid: uuid(), thumbnail_mid: `../mf/_preview/${pgct.mname.split('.')[0]}.jpg` }))]
                         } else {
                           layerInfos = [{ ...tempLayer.pgct_info, uuid: uuid(), thumbnail_mid: `../mf/_preview/${tempLayer.pgct_info.mname.split('.')[0]}.jpg` }]
                         }
@@ -139,6 +141,7 @@ export default () => {
                     })
                   })
                   setLayers([...tempLayers])
+                  console.log([...tempLayers])
                 }
               })
             })
@@ -149,7 +152,7 @@ export default () => {
 
   const handleSaveProgram = async () => {
     var mtype = layers.map(layer => layer.mtype).join('|')
-    var layout = layers.map(layer => `${layer.left / zoom},${layer.top / zoom},${layer.width / zoom},${layer.height / zoom}`).join('|')
+    var layout = layers.map(layer => `${Math.floor(layer.left / zoom)},${Math.floor(layer.top / zoom)},${Math.floor(layer.width / zoom)},${Math.floor(layer.height / zoom)}`).join('|')
     var ptid = layers.map(layer => layer.ptid).join('|')
     var volume = layers.map(() => '').join('|')
     var ptname = layers.map(() => '').join('|')
@@ -166,7 +169,7 @@ export default () => {
     var shuffle = layers.map(() => '').join('|')
     var moniarea = monitors.join('|')
     var params = {
-      pgid: pgid,
+      pgid: String(pgid),
       uid,
       select_udid: sel_udid,
       pgid_tmp,
@@ -187,7 +190,7 @@ export default () => {
       use_moni: 0,
       auto_moni: true,
       scpid: 0,
-      txtmid: '',
+      txtmid: '99',
       ptid,
       delLblMid: '',
       tempFolderId,
@@ -206,9 +209,32 @@ export default () => {
       shuffle,
       tbl_argv: '',
     }
-    // console.log(layers)
-    layers.forEach(async (layer, i) => {
-      const formData = new FormData()
+    const labelLayers = layers.filter(layer => layer.mtype === 'btn')
+    var info = new FormData()
+    info.append('cmd', 'saveLabelInfo')
+    info.append('jIndex', ptid)
+    labelLayers.forEach(layer => {
+      info.append(`info[]`, '')
+      info.append(`info[${layer.ptid}][mid]`, layer.mid)
+      info.append(`info[${layer.ptid}][udid]`, sel_udid)
+      info.append(`info[${layer.ptid}][mtype]`, layer.mtype)
+      info.append(`info[${layer.ptid}][mdesc]`, layer.mdesc)
+      info.append(`info[${layer.ptid}][mtitle]`, layer.mtitle)
+      info.append(`info[${layer.ptid}][argv]`, layer.margv)
+      // info.append(`info[${layer.ptid}][flag]`, 1)
+      // info.append(`info[${layer.ptid}][mid_BtnPs]`, layer.mid_1)
+      // info.append(`info[${layer.ptid}][mdesc_BtnPs]`, layer.mdesc_1)
+      // info.append(`info[${layer.ptid}][mtitle_BtnPs]`, layer.mtitle_1)
+      // info.append(`info[${layer.ptid}][argv_BtnPs]`, layer.margv_1)
+    })
+    await saveLabelInfo(info).then(response => {
+      convert.parseString(response.data, { explicitArray: false }, async (err, result) => {
+      })
+    })
+
+    const pgctLayers = layers.filter(layer => layer.mtype !== 'btn')
+    pgctLayers.forEach(async (layer, i) => {
+      var formData = new FormData()
       layer.layerInfos.forEach((info, index) => {
         formData.append('pgct_chk', index + 1)
         formData.append(`mid_${index + 1}`, info.mid)
@@ -228,6 +254,7 @@ export default () => {
       formData.append('idx', i + 1)
       await updatePgct(formData)
     })
+
     savePgInfo({ ...params }).then(response => {
       convert.parseString(response.data, { explicitArray: false }, (err, result) => {
         if (!err) {

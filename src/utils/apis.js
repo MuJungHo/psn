@@ -16,8 +16,13 @@ const postFormData = (uri, data) => {
 
 
 //media
+
 export const getmedialist = params => postFormData('/media.py', { cmd: 'getmedialist', ...params })
-export const saveLabelInfo = params => postFormData('/media.py', { cmd: 'saveLabelInfo', ...params })
+export const saveLabelInfo = data => instance({
+  method: "post",
+  url: '/media.py',
+  data
+})
 
 //program
 export const savePgInfo = params => postFormData('/pg.py', { cmd: 'savePgInfo', ...params })
