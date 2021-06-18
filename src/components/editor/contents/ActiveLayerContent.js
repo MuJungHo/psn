@@ -1,6 +1,6 @@
 import React from 'react'
 import { v4 as uuid } from 'uuid'
-import LayerDetailDialog from '../../editor/LayerDetailDialog'
+import LayerDetail from '../LayerDetail'
 import ActionButton from '../../material/ActionButton'
 import TextField from '../../material/TextField'
 import Add from '@material-ui/icons/Add'
@@ -38,7 +38,7 @@ export default props => {
       <input type="text" value={activeLayer.left} onChange={() => { }} />
       <input type="text" value={activeLayer.width} onChange={() => { }} />
       <input type="text" value={activeLayer.height} onChange={() => { }} />
-      <LayerDetailDialog
+      <LayerDetail
         isDialogOpen={isDialogOpen}
         setDialogOpen={setDialogOpen}
         confirmText={'確認'}

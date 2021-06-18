@@ -147,8 +147,6 @@ export default props => {
     <Dialog
       open={isDialogOpen}
       onClose={handleClose}
-      fullScreen
-      maxWidth="lg"
     >
       <DialogTitle>
         {titleText}
