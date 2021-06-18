@@ -173,7 +173,7 @@ const ProgramContent = props => {
               alignItems: 'center',
               fontSize: '1.2rem'
             }}>
-            {program.pgname}
+              {program.pgname}
               <div style={{ flex: 1 }} />
             </div>
             <CardMedia
@@ -265,11 +265,9 @@ export default props => {
       <Divider />
       <DialogContent style={{ display: 'flex', alignItems: 'flex-start', height: 700 }}>
         {
-          {
-            'video': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />,
-            'image': <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />,
-            'program': <ProgramContent programs={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />
-          }[type]
+          type === 'program'
+            ? <ProgramContent programs={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />
+            : <MediaContent medias={targets} activated={activated} setActivated={setActivated} mutiple={mutiple} />
         }
       </DialogContent>
       <DialogActions>

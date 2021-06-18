@@ -17,6 +17,8 @@ const postFormData = (uri, data) => {
 
 //media
 
+export const getTextInfo = params => postFormData('/media.py', { cmd: 'getTextInfo', ...params })
+export const getBoardInfo = params => postFormData('/media.py', { cmd: 'getBoardInfo', ...params })
 export const getmedialist = params => postFormData('/media.py', { cmd: 'getmedialist', ...params })
 export const saveLabelInfo = data => instance({
   method: "post",
@@ -38,7 +40,7 @@ export const updatePgct = data => instance({
 })
 export const getscriptlist = params => postFormData('/pg.py', { cmd: 'getscriptlist', ...params })
 export const delpg = params => postFormData('/pg.py', { cmd: 'delpg', ...params })
-
+export const createTxtImage = params => postFormData('/pg.py', { cmd: 'createTxtImage', ...params })
 
 //daily
 export const getScList = params => postFormData('/schedule.py', { cmd: 'getScList', ...params })

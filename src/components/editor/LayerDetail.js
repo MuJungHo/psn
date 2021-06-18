@@ -13,6 +13,8 @@ import {
   CardContent,
   CardMedia,
 } from '@material-ui/core'
+import convert from 'xml2js'
+
 import message from '../../i18n'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Warning from '../../icons/Warning'
@@ -22,7 +24,7 @@ import moment from 'moment'
 import PickDialog from '../PickDialog'
 import ActionButton from '../material/ActionButton'
 import Delete from '@material-ui/icons/Delete'
-
+import { createTxtImage, getBoardInfo, getTextInfo } from '../../utils/apis'
 const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
 const psn = baseURL + '/psn'
 const mf = baseURL + '/mf'
@@ -91,8 +93,10 @@ export default props => {
     activeLayer,
     mutiple
   } = props
+  const { program } = useSelector(state => state.program)
   const [isPickDialogOpen, setPickDialogOpen] = React.useState(false)
   const [layerDetail, setLayerDetail] = React.useState({ ...activeLayer })
+  console.log(layerDetail)
   React.useEffect(() => {
     setLayerDetail({ ...activeLayer })
   }, [activeLayer])
@@ -102,7 +106,80 @@ export default props => {
       }
     }
   }, [isDialogOpen])
+  const handleCreateStxtImage = (stxt, callback) => {
+    getTextInfo({ mid: stxt.mid })
+      .then(res => {
+        convert.parseString(res.data, { explicitArray: false }, (err, result) => {
+          if (!err) {
+            var argv = result.root.argv || '||||||'
+            var txtcontent = result.root.mdesc || ''
+            var txtbgtransparency = argv.split('|')[0].substring(0, 3)
+            var txtfont = argv.split('|')[1]
+            var txtsize = argv.split('|')[2]
+            var txtcolor = argv.split('|')[4]
+            var txtbgcolor = argv.split('|')[5]
+            var txtalign = argv.split('|')[6]
 
+            createTxtImage({
+              tempFolderId: program.tempFolderId,
+              fnc: 'setTxtImg',
+              pgid: program.pgid,
+              idx: layerDetail.ptid,
+              mtype: 'stxt',
+              width: layerDetail.width,
+              height: layerDetail.height,
+              txtcontent,
+              txtname: '',
+              txtfont,
+              txtsize,
+              txtcolor,
+              txtbgcolor,
+              txtalign,
+              txtbgtransparency,
+              txtdecoration: '',
+              txtdirection: '',
+            }).then(() => callback())
+          }
+        })
+      })
+  }
+  const handleCreateBoardImage = (board, callback) => {
+    getBoardInfo({ mid: board.mid })
+      .then(res => {
+        convert.parseString(res.data, { explicitArray: false }, (err, result) => {
+          if (!err) {
+            var argv = result.root.argv || '||||||'
+            var txtcontent = result.root.mdesc || ''
+            var txtbgtransparency = argv.split('|')[0].substring(0, 3)
+            var txtfont = argv.split('|')[1]
+            var txtsize = argv.split('|')[2]
+            var txtcolor = argv.split('|')[4]
+            var txtbgcolor = argv.split('|')[5]
+            var txtalign = argv.split('|')[6]
+
+            createTxtImage({
+              tempFolderId: program.tempFolderId,
+              fnc: 'setTxtImg',
+              pgid: program.pgid,
+              idx: layerDetail.ptid,
+              mtype: 'board',
+              width: layerDetail.width,
+              height: layerDetail.height,
+              txtcontent,
+              txtname: '',
+              txtfont,
+              txtsize,
+              txtcolor,
+              txtbgcolor,
+              txtalign,
+              txtbgtransparency,
+              txtdecoration: '',
+              txtdirection: '',
+            }).then(() => callback())
+          }
+        })
+      })
+  }
   const handleCancel = () => {
     if (typeof cancel === 'function') cancel()
     setDialogOpen(false)
@@ -112,7 +189,15 @@ export default props => {
     setDialogOpen(false)
   }
   const handleConfirm = () => {
-    if (typeof confirm === 'function') confirm(layerDetail)
+    if (typeof confirm === 'function') {
+      if (layerDetail.mtype === 'board' && layerDetail.layerInfos.length > 0) {
+        handleCreateBoardImage(layerDetail.layerInfos[0], () => confirm(layerDetail))
+      } else if (layerDetail.mtype === 'stxt' && layerDetail.layerInfos.length > 0) {
+        handleCreateStxtImage(layerDetail.layerInfos[0], () => confirm(layerDetail))
+      } else {
+        confirm(layerDetail)
+      }
+    }
     setDialogOpen(false)
   }
   const handleAddLayerInfo = () => {
@@ -147,8 +232,6 @@ export default props => {
     <Dialog
       open={isDialogOpen}
       onClose={handleClose}
-      fullScreen
-      maxWidth="lg"
     >
       <DialogTitle>
         {titleText}

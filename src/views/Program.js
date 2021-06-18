@@ -122,12 +122,11 @@ export default () => {
               })
             })
             setLayers([...tempLayers])
-            console.log([...tempLayers])
           }
         })
       })
   }, [])
-
+// console.log(layers)
   const handleSaveProgram = async () => {
     var mtype = layers.map(layer => layer.mtype).join('|')
     var layout = layers.map(layer => `${Math.floor(layer.left / zoom)},${Math.floor(layer.top / zoom)},${Math.floor(layer.width / zoom)},${Math.floor(layer.height / zoom)}`).join('|')
