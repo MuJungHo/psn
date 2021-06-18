@@ -86,7 +86,7 @@ export default () => {
   const uid = getCookie('login_uid') || 1
   const login_udid = getCookie('login_udid') || '1'
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
-  const assets = process.env.REACT_APP_ASSETS
+  const assets = process.env.REACT_APP_ASSETS || '..'
   const psn = baseURL + '/psn'
   const mf = baseURL + '/mf'
   React.useEffect(() => {
@@ -95,7 +95,9 @@ export default () => {
         .then(res => {
           convert.parseString(res.data, { explicitArray: false }, (err, scrResult) => {
             if (!err) {
+              if (scrResult.root.department === undefined) return setFolders([])
               const tempDep = scrResult.root.department.find(dep => dep.$.udid === sel_udid)
+              if (!tempDep.script) return setFolders([])
               var tempFolders = Object.keys(tempDep.script)[0] === '0'
                 ? [...tempDep.script.map(folder => ({ ...folder.$ }))]
                 : [{ ...tempDep.script.$ }]
@@ -194,7 +196,7 @@ export default () => {
               </div>
               <CardMedia
                 className={classes.media}
-                image={`../assets/folder-back.svg`}
+                image={`${assets}/folder-back.svg`}
               />
               <CardContent style={{ padding: '.8rem 8px', display: 'flex' }}>
                 <div className={classes.spacer}></div>
@@ -229,7 +231,7 @@ export default () => {
               </div>
               <CardMedia
                 className={classes.media}
-                image={`../assets/folder.svg`}
+                image={`${assets}/folder.svg`}
               />
               <CardContent style={{ padding: '.8rem 8px', display: 'flex' }}>
                 <div className={classes.spacer}></div>
