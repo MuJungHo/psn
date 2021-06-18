@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Card from '../components/material/Card'
 import convert from 'xml2js'
 import moment from 'moment'
-import { getPgLstByUdid, delpg } from '../utils/apis'
+import { getPgLstByUdid, delpg, getscriptlist } from '../utils/apis'
 import { useSelector } from 'react-redux'
 import { useHistory } from "react-router-dom"
 import Actions from '../components/Actions'
@@ -33,8 +33,7 @@ const useStyles = makeStyles({
     height: '12vh',
     margin: '0 20px',
     backgroundPosition: 'center top',
-    backgroundSize: 'contain'
-
+    backgroundSize: 'contain',
   },
   container: {
     display: 'flex',
@@ -73,6 +72,9 @@ const programTypes = [
 export default () => {
   const classes = useStyles()
   const history = useHistory();
+  const [parentFolder, setParentFolder] = React.useState([])
+  const [select_scpid, setSelFolder] = React.useState('0')
+  const [folders, setFolders] = React.useState([])
   const [programs, setPrograms] = React.useState([])
   const [selected, setSelected] = React.useState({})
   const [isDeleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
@@ -82,25 +84,41 @@ export default () => {
   const { status } = useSelector(state => state.drawer)
   const { sel_udid } = useSelector(state => state.user)
   const uid = getCookie('login_uid') || 1
+  const login_udid = getCookie('login_udid') || '1'
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
+  const assets = process.env.REACT_APP_ASSETS
   const psn = baseURL + '/psn'
   const mf = baseURL + '/mf'
   React.useEffect(() => {
     if (sel_udid) {
-      getPgLstByUdid({ select_udid: sel_udid }).then(response => {
-        convert.parseString(response.data, { explicitArray: false }, (err, result) => {
-          if (!err) {
-            if (result.root.pg_info === undefined) return setPrograms([])
-            if (Object.keys(result.root.pg_info)[0] === '0') {
-              setPrograms([...result.root.pg_info])
-            } else {
-              setPrograms([{ ...result.root.pg_info }])
+      getscriptlist({ login_udid })
+        .then(res => {
+          convert.parseString(res.data, { explicitArray: false }, (err, scrResult) => {
+            if (!err) {
+              const tempDep = scrResult.root.department.find(dep => dep.$.udid === sel_udid)
+              var tempFolders = Object.keys(tempDep.script)[0] === '0'
+                ? [...tempDep.script.map(folder => ({ ...folder.$ }))]
+                : [{ ...tempDep.script.$ }]
+              tempFolders = tempFolders.filter(folder => folder.par_foid === select_scpid)
+              setFolders(tempFolders)
             }
-          }
+          })
+          getPgLstByUdid({ select_udid: sel_udid, select_scpid })
+            .then(response => {
+              convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+                if (!err) {
+                  if (result.root.pg_info === undefined) return setPrograms([])
+                  if (Object.keys(result.root.pg_info)[0] === '0') {
+                    setPrograms([...result.root.pg_info])
+                  } else {
+                    setPrograms([{ ...result.root.pg_info }])
+                  }
+                }
+              })
+            })
         })
-      })
     }
-  }, [sel_udid])
+  }, [sel_udid, select_scpid])
   const handleDeleteProgram = program => {
     setDeleteDialogOpen(true)
     setSelected({ ...program })
@@ -123,6 +141,14 @@ export default () => {
         })
       })
   }
+
+  const handleToLastFolder = () => {
+    var tempParFolders = parentFolder
+    var last = tempParFolders.pop()
+
+    setParentFolder([...tempParFolders])
+    setSelFolder(last)
+  }
   return (
     <div className={classes.root}>
       <Card >
@@ -142,7 +168,76 @@ export default () => {
           ]} btnText={'新增節目'} btnIcon={<Add />} />
         </CardContent>
       </Card>
+      <div style={{ marginLeft: 20, marginTop: 20, height: 20 }}>{parentFolder.join('>')}</div>
       <div className={classes.container}>
+
+        {
+          select_scpid === '0'
+            ? null
+            :
+            <Card
+              className={classes.card}
+              style={{
+                width: status ? '15.1%' : '12.7%'
+              }}
+              onClick={handleToLastFolder}
+            >
+              <div style={{
+                padding: '0 10px 0 20px',
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: '1.2rem'
+              }}>
+                {'-'}
+                <div style={{ flex: 1 }} />
+                <Actions items={[]} />
+              </div>
+              <CardMedia
+                className={classes.media}
+                image={`../assets/folder-back.svg`}
+              />
+              <CardContent style={{ padding: '.8rem 8px', display: 'flex' }}>
+                <div className={classes.spacer}></div>
+                {'-'}
+              </CardContent>
+            </Card>
+        }
+        {
+          folders && folders.map(folder =>
+            <Card
+              key={folder.scpid}
+              className={classes.card}
+              style={{
+                width: status ? '15.1%' : '12.7%'
+              }}
+              onClick={() => {
+                setParentFolder([
+                  ...parentFolder,
+                  folder.par_foid])
+                setSelFolder(folder.scpid)
+              }}
+            >
+              <div style={{
+                padding: '0 10px 0 20px',
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: '1.2rem'
+              }}>
+                {folder.scpname}
+                <div style={{ flex: 1 }} />
+                <Actions items={[]} />
+              </div>
+              <CardMedia
+                className={classes.media}
+                image={`../assets/folder.svg`}
+              />
+              <CardContent style={{ padding: '.8rem 8px', display: 'flex' }}>
+                <div className={classes.spacer}></div>
+                {'-'}
+              </CardContent>
+            </Card>
+          )
+        }
         {
           programs && programs.map((program, key) =>
             <Card
@@ -167,11 +262,10 @@ export default () => {
               </div>
               <CardMedia
                 className={classes.media}
-                image={`${mf}${program.preview.split('mf')[1]}?t=${moment().unix()}`}
+                image={`${mf}${program.preview.split('mf')[1]}`}
               />
               <CardContent style={{ padding: '.8rem 8px', display: 'flex' }}>
                 <div className={classes.spacer}></div>
-                {/* {message(locale, 'lastModifyTime')}&nbsp; */}
                 {moment(program.utime).format('YYYY/MM/DD HH:mm')}
               </CardContent>
             </Card>
