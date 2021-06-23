@@ -1,12 +1,11 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import Dialog from '@material-ui/core/Dialog';
 import Editor from '../components/editor/Editor'
 import Button from '../components/material/Button'
 import convert from 'xml2js'
 import moment from 'moment'
-import { getPgInfo, savePgInfo, saveLabelInfo, postScreenshot, getPgctInfo, updatePgct } from '../utils/apis'
+import { getPgInfo, getPgPreviewInfoFromEdit, savePgInfo, saveLabelInfo, postScreenshot, getPgctInfo, updatePgct } from '../utils/apis'
 import { useHistory } from "react-router-dom"
 import html2canvas from 'html2canvas'
 import { v4 as uuid } from 'uuid'
@@ -16,9 +15,7 @@ import { setProgram } from '../actions/program'
 export default () => {
   const { pgid } = useParams()
   const history = useHistory();
-  const dispatch = useDispatch()  
-  const [isDialogOpen, setDialogOpen] = React.useState(true)
-
+  const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(true)
   const [layers, setLayers] = React.useState([])
   const [monitors, setMonitors] = React.useState([])
@@ -122,11 +119,12 @@ export default () => {
               })
             })
             setLayers([...tempLayers])
+            console.log([...tempLayers])
           }
         })
       })
   }, [])
-// console.log(layers)
+
   const handleSaveProgram = async () => {
     var mtype = layers.map(layer => layer.mtype).join('|')
     var layout = layers.map(layer => `${Math.floor(layer.left / zoom)},${Math.floor(layer.top / zoom)},${Math.floor(layer.width / zoom)},${Math.floor(layer.height / zoom)}`).join('|')
@@ -269,22 +267,16 @@ export default () => {
   }
 
   return (
-    <Dialog
-      open={isDialogOpen}
-      onClose={() => setDialogOpen(false)}
-      fullScreen
-    >
-      <Editor
-        layers={layers}
-        setLayers={setLayers}
-        monitors={monitors}
-        setMonitors={setMonitors}
-        board={board}
-        zoom={zoom}
-        setZoom={setZoom}
-        save={handleSaveProgram}
-        loading={loading}
-      />
-    </Dialog>
+    <Editor
+      layers={layers}
+      setLayers={setLayers}
+      monitors={monitors}
+      setMonitors={setMonitors}
+      board={board}
+      zoom={zoom}
+      setZoom={setZoom}
+      save={handleSaveProgram}
+      loading={loading}
+    />
   )
 }

@@ -91,73 +91,83 @@ export default ({
     setActiveLayer({ ...layers.find(layer => layer.ptid === activeLayer.ptid) })
   }, [layers])
   return (
-    <>
-      <ActionBar
-        style={{ width: board.width, margin: '30px 0' }}
-        zoom={zoom}
-        layers={layers}
-        setLayers={setLayers}
-        activeLayer={activeLayer}
-        setContent={setContent}
-        setActiveLayer={setActiveLayer}
-      />
-      <svg id="board" xmlns="http://www.w3.org/2000/svg" version="1.1" width={board.width} height={board.height} x={board.left} y={board.top} ref={boardRef} >
-        <image
-          xlinkHref={bgImage}
-          x={board.left}
-          y={board.top}
-          width={board.width}
-          height={board.height}
-        />
-        <rect
-          style={{
-            fill
-          }}
-          x={board.left}
-          y={board.top}
-          width={board.width}
-          height={board.height}
-        />
-        {
-          monitors.length > 0
-            ?
-            monitors.map((monitor, index) =>
-              <Monitor
-                key={index}
-                layers={layers}
-                setLayers={setLayers}
-                board={board}
-                width={monitor.split(',')[2] * zoom}
-                height={monitor.split(',')[3] * zoom}
-                top={monitor.split(',')[1] * zoom}
-                left={monitor.split(',')[0] * zoom}
-                activeLayer={activeLayer}
-                setActiveLayer={setActiveLayer}
-                boardRef={boardRef}
-              />)
-            :
-            <Monitor
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', paddingRight: 300, position: 'relative' }}>
+      {
+        loading
+          ?
+          <Backdrop open style={{ color: '#fff', zIndex: 10, opacity: .3 }}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+          :
+          <>
+            <ActionBar
+              style={{ width: board.width, margin: '30px 0' }}
+              zoom={zoom}
               layers={layers}
               setLayers={setLayers}
-              board={board}
-              width={board.width}
-              height={board.height}
-              top={board.top}
-              left={board.left}
+              activeLayer={activeLayer}
+              setContent={setContent}
+              setActiveLayer={setActiveLayer}
+            />
+            <svg id="board" xmlns="http://www.w3.org/2000/svg" version="1.1" width={board.width} height={board.height} x={board.left} y={board.top} ref={boardRef} >
+              <image
+                xlinkHref={bgImage}
+                x={board.left}
+                y={board.top}
+                width={board.width}
+                height={board.height}
+              />
+              <rect
+                style={{
+                  fill
+                }}
+                x={board.left}
+                y={board.top}
+                width={board.width}
+                height={board.height}
+              />
+              {
+                monitors.length > 0
+                  ?
+                  monitors.map((monitor, index) =>
+                    <Monitor
+                      key={index}
+                      layers={layers}
+                      setLayers={setLayers}
+                      board={board}
+                      width={monitor.split(',')[2] * zoom}
+                      height={monitor.split(',')[3] * zoom}
+                      top={monitor.split(',')[1] * zoom}
+                      left={monitor.split(',')[0] * zoom}
+                      activeLayer={activeLayer}
+                      setActiveLayer={setActiveLayer}
+                      boardRef={boardRef}
+                    />)
+                  :
+                  <Monitor
+                    layers={layers}
+                    setLayers={setLayers}
+                    board={board}
+                    width={board.width}
+                    height={board.height}
+                    top={board.top}
+                    left={board.left}
+                    activeLayer={activeLayer}
+                    setActiveLayer={setActiveLayer}
+                    boardRef={boardRef}
+                  />
+              }
+            </svg>
+            <Content
+              save={save}
+              layers={layers}
+              setLayers={setLayers}
               activeLayer={activeLayer}
               setActiveLayer={setActiveLayer}
-              boardRef={boardRef}
+              content={content}
             />
-        }
-      </svg>
-      <Content
-        save={save}
-        layers={layers}
-        setLayers={setLayers}
-        activeLayer={activeLayer}
-        setActiveLayer={setActiveLayer}
-        content={content}
-      />
-    </>
+          </>
+      }
+    </div>
   )
 }
