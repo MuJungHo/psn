@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDrag, useDrop } from "react-dnd";
 import LineAnchor from './LineAnchor'
+import { v4 as uuid } from 'uuid'
 const color = ['#6589e1', '#b2fcff', '#5edfff', '#3d64ff']
 const hours = [...Array(24).keys()]
 function useLocalDrop(onDrop, setCanDrop, setOver) {
@@ -12,8 +13,9 @@ function useLocalDrop(onDrop, setCanDrop, setOver) {
       const offset = monitor.getClientOffset();
       if (offset && ref.current) {
         const dropTargetXy = ref.current.getBoundingClientRect();
-        onDrop("local", {
-          y: offset.y - dropTargetXy.top
+        onDrop({
+          item,
+          x: offset.x - dropTargetXy.left
         });
       }
     },
@@ -36,7 +38,6 @@ export default props => {
   const [programs, setPrograms] = React.useState([])
   const [canDrop, setCanDrop] = React.useState(false)
   const [isOver, setOver] = React.useState(false)
-  const ref = useLocalDrop(console.log, setCanDrop, setOver);
   const tops = programs.map(p => Number(p.st))
   const bottoms = programs.map(p => Number(p.et))
   let backgroundColor = '';
@@ -50,6 +51,18 @@ export default props => {
   }
   const spaceWidth = window.innerWidth - 260
   const zoom = spaceWidth / 1440
+  const addSlot = card => {
+    const { item, x } = card
+    console.log(param)
+    setParam({
+      ...param,
+      programs: [
+        ...param.programs,
+        { uuid: uuid(),pgid: item.pgid, st: x, et: x + 100 }
+      ]
+    })
+  }
+  const ref = useLocalDrop(addSlot, setCanDrop, setOver);
   const dragStartLine = offsetY => {
     const st = Math.round(offsetY)
     if (st < 0) st = 0
@@ -99,15 +112,15 @@ export default props => {
   }, [param.programs])
   return <svg
     id="timeline" xmlns="http://www.w3.org/2000/svg" version="1.1"
-    width={750}
-    height={1440}
+    width={1440}
+    height={190}
     style={{ backgroundColor, margin: 'auto', marginBottom: 20, marginTop: 20 }}
     ref={ref}
   >
     <rect
       fill="transparent"
-      height={1440}
-      width={750}
+      height={190}
+      width={1440}
       strokeWidth={strokeWidth}
       stroke="#bebebe"
       onClick={() => setActiveSlot({})}
@@ -115,8 +128,8 @@ export default props => {
     {
       hours.map(hour =>
         <g key={hour} >
-          <text x={0} y={60 * hour + 5} fill="#bebebe">{hour}</text>
-          <line x1={20} y1={60 * hour} x2="700" y2={60 * hour} style={{ stroke: '#bebebe' }} />
+          <text x={60 * hour + 5} y={20} fill="#bebebe">{hour}</text>
+          <line x1={60 * hour} y1={20} x2={60 * hour} y2={170} style={{ stroke: '#bebebe' }} />
         </g>)
     }
     {
@@ -132,10 +145,10 @@ export default props => {
               fill: color[program.pgid % 4],
               fillOpacity: .5
             }}
-            x={20}
-            y={program.st}
-            height={program.et - program.st}
-            width={680}
+            x={program.st}
+            y={20}
+            height={150}
+            width={program.et - program.st}
             rx={5}
             ry={5}
           />
@@ -144,12 +157,12 @@ export default props => {
               ?
               <>
                 <LineAnchor
-                  y={Number(program.st) - 3}
+                  x={Number(program.st) - 3}
                   element={document.getElementById('timeline')}
                   offset={dragStartLine}
                 />
                 <LineAnchor
-                  y={Number(program.et) - 3}
+                  x={Number(program.et) - 3}
                   element={document.getElementById('timeline')}
                   offset={dragEndLine}
                 />

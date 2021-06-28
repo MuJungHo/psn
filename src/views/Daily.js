@@ -31,6 +31,7 @@ import TimeLine from '../components/timeline/TimeLine'
 const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
 const psn = baseURL + '/psn'
 const mf = baseURL + '/mf'
+const assets = process.env.REACT_APP_ASSETS || '..'
 
 const useStyles = makeStyles({
   root: {
@@ -55,8 +56,7 @@ const useStyles = makeStyles({
   container: {
     padding: 20,
     display: 'flex',
-    flex: 1,
-    position: 'fixed'
+    flex: 1
   },
   card: {
     marginRight: '1.5%',
@@ -80,6 +80,17 @@ const useStyles = makeStyles({
     flex: 1
   }
 })
+const ProgramCard = props => {
+  const classes = useStyles()
+  const { program } = props
+  const [, drag] = useDrag({
+    item: { type: "Card", ...program }
+  });
+  return <div className={classes.card} ref={drag}>
+    {program.pgname}
+    {moment(program.utime).format('YYYY/MM/DD HH:mm')}
+  </div>
+}
 export default () => {
   const classes = useStyles()
   const history = useHistory();
@@ -157,12 +168,12 @@ export default () => {
           </Button>
         </CardContent>
       </Card>
+      <TimeLine param={param} setParam={setParam} />
       <div className={classes.container}>
         {
-          // programs.map(program => <ProgramCard key={program.pgid} name={program.pgname} program={program} />)
+          programs.map(program => <ProgramCard key={program.pgid} name={program.pgname} program={program} />)
         }
       </div>
-      <TimeLine param={param} setParam={setParam} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default ({ y, element, offset }) => {
+export default ({ x, element, offset }) => {
   const [isMoving, setMoving] = React.useState(false)
   const startDrag = () => {
     setMoving(true)
@@ -12,21 +12,21 @@ export default ({ y, element, offset }) => {
     if (isMoving) setMoving(false)
   }
   const drag = e => {
-    offset(e.offsetY)
-    if (e.offsetY <= 0 || e.offsetY >= 1440) {
+    offset(e.offsetX)
+    if (e.offsetX <= 0 || e.offsetX >= 1440) {
       endDrag()
     }
   }
   return (
     <rect
       onMouseDown={startDrag}
-      y={y}
-      width={700}
-      height={10}
-      x={5}
+      x={x}
+      width={10}
+      height={150}
+      y={20}
       style={{
         fillOpacity: 0,
-        cursor: 's-resize'
+        cursor: 'col-resize'
       }}
     />
   )
