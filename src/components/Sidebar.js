@@ -99,7 +99,7 @@ export default function MiniDrawer() {
   const dispatch = useDispatch()
   const { status } = useSelector(state => state.drawer)
   const { sel_udid } = useSelector(state => state.user)
-  const assets = process.env.REACT_APP_ASSETS
+  const assets = process.env.NODE_ENV === 'development' ? '/assets' : process.env.REACT_APP_ASSETS
   const login_udid = getCookie('login_udid') || '1'
   const [stores, setStores] = React.useState([])
   const brand = login_udid

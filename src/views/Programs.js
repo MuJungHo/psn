@@ -86,7 +86,7 @@ export default () => {
   const uid = getCookie('login_uid') || 1
   const login_udid = getCookie('login_udid') || '1'
   const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
-  const assets = process.env.REACT_APP_ASSETS || '..'
+  const assets = process.env.NODE_ENV === 'development' ? '/assets' : process.env.REACT_APP_ASSETS
   const psn = baseURL + '/psn'
   const mf = baseURL + '/mf'
   React.useEffect(() => {

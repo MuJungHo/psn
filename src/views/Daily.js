@@ -26,12 +26,14 @@ import {
   CircularProgress,
 } from '@material-ui/core'
 import { v4 as uuid } from 'uuid'
-import { getPgLstByUdid, loadSc, saveSc } from '../utils/apis'
+import { getPgLstByUdid, loadSc, saveSc, getscriptlist } from '../utils/apis'
 import TimeLine from '../components/timeline/TimeLine'
+import { getCookie } from '../utils/libs'
 const baseURL = process.env.REACT_APP_DOMAIN || 'http://127.0.0.1'
 const psn = baseURL + '/psn'
 const mf = baseURL + '/mf'
-const assets = process.env.REACT_APP_ASSETS || '..'
+const assets = process.env.NODE_ENV === 'development' ? '/assets' : process.env.REACT_APP_ASSETS
+const login_udid = getCookie('login_udid') || '1'
 
 const useStyles = makeStyles({
   root: {
@@ -59,10 +61,14 @@ const useStyles = makeStyles({
     flex: 1
   },
   card: {
-    marginRight: '1.5%',
+    marginRight: 20,
     marginBottom: 20,
-    height: 'auto',
+    width: 180,
+    height: 150,
+    padding: 10,
     cursor: 'pointer',
+    backgroundColor: '#fff',
+    borderRadius: 5,
     '&:hover': {
       boxShadow: '0 3px 8px 0 rgba(141, 152, 170, .7)',
     },
@@ -88,19 +94,49 @@ const ProgramCard = props => {
   });
   return <div className={classes.card} ref={drag}>
     {program.pgname}
+    <img
+      style={{ width: 100 }}
+      src={`${mf}${program.preview.split('mf')[1]}`}
+    />
     {moment(program.utime).format('YYYY/MM/DD HH:mm')}
+  </div>
+}
+const FolderCard = props => {
+  const classes = useStyles()
+  const { folder, onClick } = props
+  const [, drag] = useDrag({
+    item: { type: "Card", ...folder }
+  });
+  return <div className={classes.card} ref={drag} onClick={onClick}>
+    {'-'}
+    <img
+      style={{ width: 100 }}
+      src={`${assets}/folder.svg`}
+    />
+    {'-'}
   </div>
 }
 export default () => {
   const classes = useStyles()
   const history = useHistory();
   const [programs, setPrograms] = React.useState([])
+  const [folders, setFolders] = React.useState([])
   const [param, setParam] = React.useState({})
   const { sel_udid } = useSelector(state => state.user)
+  const [parentFolder, setParentFolder] = React.useState([])
+  const [select_scpid, setSelFolder] = React.useState('0')
   const { scid } = useParams()
   const handleSaveDailySch = () => {
     const pgRec = param.programs.map(pg => [Number(pg.pgid), Number(pg.st), Number(pg.et)])
     saveSc({ scid, scname: param.name, udid: sel_udid, pgRec: JSON.stringify(pgRec) })
+  }
+  
+  const handleToLastFolder = () => {
+    var tempParFolders = parentFolder
+    var last = tempParFolders.pop()
+
+    setParentFolder([...tempParFolders])
+    setSelFolder(last)
   }
   React.useEffect(() => {
     if (sel_udid) {
@@ -125,21 +161,42 @@ export default () => {
             }
           }
         })
-        getPgLstByUdid({ select_udid: sel_udid }).then(response => {
-          convert.parseString(response.data, { explicitArray: false }, (err, result) => {
-            if (!err) {
-              if (result.root.pg_info === undefined) return setPrograms([])
-              if (Object.keys(result.root.pg_info)[0] === '0') {
-                setPrograms([...result.root.pg_info.map(program => ({ ...program }))])
-              } else {
-                setPrograms([{ ...result.root.pg_info }])
-              }
-            }
-          })
-        })
       })
     }
   }, [sel_udid])
+
+  React.useEffect(() => {
+    if (sel_udid) {
+      getscriptlist({ login_udid })
+        .then(res => {
+          convert.parseString(res.data, { explicitArray: false }, (err, scrResult) => {
+            if (!err) {
+              if (scrResult.root.department === undefined) return setFolders([])
+              const tempDep = scrResult.root.department.find(dep => dep.$.udid === sel_udid)
+              if (!tempDep.script) return setFolders([])
+              var tempFolders = Object.keys(tempDep.script)[0] === '0'
+                ? [...tempDep.script.map(folder => ({ ...folder.$ }))]
+                : [{ ...tempDep.script.$ }]
+              tempFolders = tempFolders.filter(folder => folder.par_foid === select_scpid)
+              setFolders(tempFolders)
+            }
+          })
+          getPgLstByUdid({ select_udid: sel_udid, select_scpid })
+            .then(response => {
+              convert.parseString(response.data, { explicitArray: false }, (err, result) => {
+                if (!err) {
+                  if (result.root.pg_info === undefined) return setPrograms([])
+                  if (Object.keys(result.root.pg_info)[0] === '0') {
+                    setPrograms([...result.root.pg_info])
+                  } else {
+                    setPrograms([{ ...result.root.pg_info }])
+                  }
+                }
+              })
+            })
+        })
+    }
+  }, [sel_udid, select_scpid])
   return (
     <div className={classes.root}>
       <Card >
@@ -170,6 +227,32 @@ export default () => {
       </Card>
       <TimeLine param={param} setParam={setParam} />
       <div className={classes.container}>
+        {
+          select_scpid === '0'
+            ? null
+            :
+            <div
+              className={classes.card}
+              onClick={handleToLastFolder}
+            >
+              {'-'}
+              <img
+                style={{ width: 100 }}
+                src={`${assets}/folder-back.svg`}
+              />
+              {'-'}
+            </div>
+        }
+        {
+          folders && folders.map(folder =>
+            <FolderCard key={folder.scpid} onClick={() => {
+              setParentFolder([
+                ...parentFolder,
+                folder.par_foid])
+              setSelFolder(folder.scpid)
+            }} />
+          )
+        }
         {
           programs.map(program => <ProgramCard key={program.pgid} name={program.pgname} program={program} />)
         }
