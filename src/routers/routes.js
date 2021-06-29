@@ -35,7 +35,7 @@ const routes = [
     component: Dailys
   },
   {
-    path: '/newui/schedule',
+    path: '/newui/schedule/:nsid',
     component: Schedule
   },
   {

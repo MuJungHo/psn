@@ -2,7 +2,8 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles({
   cell: {
-    width: '14%'
+    width: '14%',
+    minHeight: 60
   },
   spacer: {
     flex: 1

@@ -192,7 +192,7 @@ export default () => {
               style={{
                 width: status ? '15.1%' : '12.7%'
               }}
-              onClick={() => handleLoadSch(schedule)}
+              onClick={() => history.push(`/newui/schedule/${schedule.nsid}`)}
             >
               <div style={{
                 padding: '0 10px 0 20px',
