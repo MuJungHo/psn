@@ -157,7 +157,7 @@ export default () => {
               {'返回'}
             </Button>
           </div>
-          <div>
+          <div style={{ display: 'flex' }}>
             {
               dailys.map(daily => <DailyCard key={daily.scid} daily={daily} />)
             }
